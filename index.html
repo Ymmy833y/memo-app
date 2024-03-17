@@ -1,0 +1,161 @@
+<html lang="ja" data-bs-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <title>Memo</title>
+  <style>
+    @charset "UTF-8";
+    @import url('https://fonts.googleapis.com/css?family=Sawarabi+Mincho');
+
+    body {
+      text-align: center;
+      font-family: 'Sawarabi Mincho', sans-serif;
+    }
+
+    h1 {
+      text-shadow: 1px 1px 2px;
+    }
+
+    button,
+    p {
+      font-size: large;
+      font-weight: bold;
+    }
+
+    strong {
+      font-size: x-large;
+    }
+
+    textarea {
+      width: 100%;
+      height: 70vh;
+      font-size: 20px;
+      font-family: 'Yu Mincho Light', 'YuMincho', 'Yu Mincho', '游明朝体', 'sans-serif';
+      font-weight: bold;
+      line-height: 1.9;
+    }
+
+    .historyItem {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="./js/repository.js"></script>
+  <script src="./js/indexedDB.js"></script>
+  <script src="./js/main.js"></script>
+</head>
+
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="clipboard_default" viewBox="0 0 16 16">
+      <path
+        d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z">
+      </path>
+      <path
+        d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z">
+      </path>
+    </symbol>
+    <symbol id="clipboard_check" viewBox="0 0 16 16">
+      <path fill-rule="evenodd"
+        d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3ZM4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3Z">
+      </path>
+    </symbol>
+    <symbol id="dark_mode" viewBox="0 0 16 16">
+      <path
+        d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z">
+      </path>
+    </symbol>
+    <symbol id="light_mode" viewBox="0 0 16 16">
+      <path
+        d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z">
+      </path>
+    </symbol>
+    <symbol id="menu" viewBox="0 0 16 16">
+      <path fill-rule="evenodd"
+        d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+    </symbol>
+    <symbol id="checked" viewBox="0 0 16 16">
+      <path
+        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+    </symbol>
+    <symbol id="unChecked" viewBox="0 0 16 16">
+      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+      <path
+        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+    </symbol>
+  </svg>
+  <main class="container">
+    <div class="py-3">
+      <div class="d-flex">
+        <div class="flex-grow-1">
+          <h5>全体： <strong id="count_num">0</strong></h5>
+        </div>
+        <div class="flex-grow-1">
+          <h5>選択： <strong id="sel_count_num">0</strong></h5>
+        </div>
+        <button id="clipboard-btn" class="btn btn-outline-primary">
+          <svg width="20" height="20" fill="currentColor">
+            <use id="clipboard-btn-svg" xlink:href="#clipboard_default"></use>
+          </svg>
+        </button>
+        <button id="darkmode-btn" class="btn btn-outline-primary ms-2">
+          <svg width="20" height="20" fill="currentColor">
+            <use id="darkmode-btn-svg" xlink:href="#dark_mode"></use>
+          </svg>
+        </button>
+        <button id="menu-btn" class="btn btn-outline-primary ms-2" type="button" data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvas" aria-controls="offcanvas">
+          <svg width="20" height="20" fill="currentColor">
+            <use id="menu-btn-svg" xlink:href="#menu"></use>
+          </svg>
+        </button>
+      </div>
+      <div class="offcanvas offcanvas-end w-75" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+        <div class="offcanvas-header d-flex justify-content-between">
+          <h5 id="offcanvasLabel">履歴</h5>
+          <div class="d-flex align-items-center">
+            <input type="checkbox" class="btn-check" id="autoSave" autocomplete="off" checked>
+            <label class="btn btn-outline-secondary me-3" for="autoSave">自動保存 <span id="autoSaveIcon"
+                class="text-success">
+                <svg width="20" height="20" fill="currentColor">
+                  <use id="autoSaveIcon-btn-svg" xlink:href="#checked"></use>
+                </svg>
+              </span></label>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+        </div>
+        <div class="offcanvas-body">
+          <ul id="historyList" class="list-group list-group-flush text-start"></ul>
+        </div>
+      </div>
+      <div class="my-2">
+        <div class="row">
+          <div class="col-2">
+            <span>Font size</span>
+          </div>
+          <div class="col-8 d-flex align-items-center">
+            <input type="range" class="w-100" id="font_size_range" min="10" max="80" step="1" value="14">
+          </div>
+          <div class="col-2">
+            <strong id="font_size_num">14</strong>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="py-2">
+        <textarea id="textarea" onkeyup="duringInput()"></textarea>
+      </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
