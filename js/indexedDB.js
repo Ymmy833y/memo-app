@@ -1,4 +1,4 @@
-const DB_NAME = "sample";
+const DB_NAME = "memoApp";
 const VERSION = 1;
 
 class IndexedDB {

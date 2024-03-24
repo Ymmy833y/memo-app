@@ -2,11 +2,6 @@
 const textDB = new TextDB;
 new IndexedDB().initDB([textDB.setUpDB()]);
 
-const FONT_FAMILY = {
-  Mincho: ['Yu Mincho Light', 'YuMincho', 'Yu Mincho', '貂ｸ譏取悃菴 ', 'sans-serif'],
-  Gothic: ["YuGothic", 'Yu Gothic', 'sans-serif'],
-  Cursive: ["SimSun", 'Kaiti SC', 'sans-serif'],
-}
 let isClipboardCheck = false;
 let isAutoSave = true;
 
@@ -34,14 +29,28 @@ class HistoryItem {
     contentForText.classList.add("col-9", "historyItem");
     contentForText.innerText = this.#text.getText();
     const contentForFunc = document.createElement("div");
-    contentForFunc.classList.add("col-1");
+    contentForFunc.classList.add("col-1", "p-0");
     const displayBtn = document.createElement("button");
     displayBtn.classList.add("btn", "btn-outline-secondary", "w-100", "mb-1");
-    displayBtn.innerText = "表示";
+    const displayDetailText = document.createElement("div");
+    displayDetailText.classList.add("d-none", "d-sm-inline");
+    displayDetailText.innerText = "表示";
+    displayBtn.appendChild(displayDetailText);
+    const displayDetailIcon = document.createElement("div");
+    displayDetailIcon.classList.add("d-sm-none");
+    displayDetailIcon.innerHTML = createIconElem("indicate");
+    displayBtn.appendChild(displayDetailIcon);
     contentForFunc.appendChild(displayBtn);
     const removeBtn = document.createElement("button");
     removeBtn.classList.add("btn", "btn-outline-danger", "w-100");
-    removeBtn.innerText = "削除";
+    const removeDetailText = document.createElement("div");
+    removeDetailText.classList.add("d-none", "d-sm-inline");
+    removeDetailText.innerText = "削除";
+    removeBtn.appendChild(removeDetailText);
+    const removeDetailIcon = document.createElement("div");
+    removeDetailIcon.classList.add("d-sm-none");
+    removeDetailIcon.innerHTML = createIconElem("remove");
+    removeBtn.appendChild(removeDetailIcon);
     contentForFunc.appendChild(removeBtn);
 
     row.appendChild(contentForDate);
