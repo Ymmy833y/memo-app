@@ -59,6 +59,11 @@ strong {
 #preview-content img {
   width: 100%;
 }
+
+#preview-content a {
+  word-break: break-all;
+}
+
 #preview-content pre {
   white-space: pre-wrap;
 }
