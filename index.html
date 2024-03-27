@@ -4,47 +4,14 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memo</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-  <title>Memo</title>
-  <style>
-    @charset "UTF-8";
-    @import url('https://fonts.googleapis.com/css?family=Sawarabi+Mincho');
-
-    body {
-      text-align: center;
-      font-family: 'Sawarabi Mincho', sans-serif;
-    }
-
-    h1 {
-      text-shadow: 1px 1px 2px;
-    }
-
-    button,
-    p {
-      font-size: large;
-      font-weight: bold;
-    }
-
-    strong {
-      font-size: x-large;
-    }
-
-    textarea {
-      width: 100%;
-      height: 70vh;
-      font-size: 20px;
-      font-family: 'Yu Mincho Light', 'YuMincho', 'Yu Mincho', '游明朝体', 'sans-serif';
-      font-weight: bold;
-      line-height: 1.9;
-    }
-
-    .historyItem {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  </style>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="./js/repository.js"></script>
@@ -102,9 +69,17 @@
       <path fill-rule="evenodd"
         d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
     </symbol>
+    <symbol id="editOnly" viewBox="0 0 16 16">
+      <path
+        d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+    </symbol>
+    <symbol id="previewOnly" viewBox="0 0 16 16">
+      <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+      <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+    </symbol>
   </svg>
-  <main class="container">
-    <div class="py-3">
+  <header class="container text-center">
+    <div class="pt-3">
       <div class="d-flex">
         <div class="flex-grow-1">
           <h5>全体： <strong id="count_num">0</strong></h5>
@@ -160,10 +135,36 @@
           </div>
         </div>
       </div>
-      <hr>
-      <div class="py-2">
-        <textarea id="textarea" onkeyup="duringInput()"></textarea>
+  </header>
+  <hr>
+  <main class="container-lg">
+    <div class="row">
+      <div class="col-3">
+        <button class="btn btn-outline-success w-100" id="editOnly-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Editor only">
+          <svg width="20" height="20" fill="currentColor">
+            <use xlink:href="#editOnly"></use>
+          </svg>
+        </button>
       </div>
+      <div class="col-6">
+        <input type="range" class="form-range" id="viewWidthRange" min="25" max="75" step="1">
+      </div>
+      <div class="col-3">
+        <button class="btn btn-outline-info w-100" id="previewOnly-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Preview only">
+          <svg width="20" height="20" fill="currentColor">
+            <use xlink:href="#previewOnly"></use>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="row p-2">
+      <div class="col-auto p-1" id="editor">
+        <textarea class="w-100 border border-success" id="editor-textarea" onkeyup="duringInput()"></textarea>
+      </div>
+      <div class="col p-1" id="preview">
+        <div class="border border-info" id="preview-content"></div>
+      </div>
+    </div>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"

@@ -1,0 +1,76 @@
+
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css?family=Sawarabi+Mincho');
+
+body {
+  font-family: 'Sawarabi Mincho', sans-serif;
+}
+
+button,
+p {
+  font-size: large;
+  font-weight: bold;
+}
+
+strong {
+  font-size: x-large;
+}
+
+#editor {
+  width: 50%;
+}
+
+#editor-textarea, #preview-content {
+  padding: 5px;
+  height: 70vh;
+  resize: none;
+  overflow: auto;
+}
+
+#editor-textarea {
+  font-size: 20px;
+  font-family: 'Yu Mincho Light', 'YuMincho', 'Yu Mincho', '游明朝体', 'sans-serif';
+  font-weight: bold;
+  line-height: 1.9;
+}
+
+#preview-content blockquote {
+  padding-left: 6px;
+  border-left: 4px solid skyblue;
+  opacity: 0.75;
+}
+
+#preview-content table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#preview-content table th,
+#preview-content table td {
+  padding: 1vmin;
+  border: solid 2px #777777;
+  word-break: break-all;
+}
+
+#preview-content table tbody tr:hover {
+  opacity: 0.75;
+}
+
+#preview-content img {
+  width: 100%;
+}
+#preview-content pre {
+  white-space: pre-wrap;
+}
+
+#preview-content pre,
+#preview-content pre code,
+#preview-content pre code span {
+  word-break: break-all;
+}
+
+.historyItem {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

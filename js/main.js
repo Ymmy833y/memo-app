@@ -60,7 +60,8 @@ class HistoryItem {
 
     displayBtn.addEventListener("click", () => {
       innsertText();
-      document.getElementById("textarea").value = this.#text.getText();
+      document.getElementById("editor-textarea").value = this.#text.getText();
+      updateContent();
     });
     removeBtn.addEventListener("click", () => {
       removeText(this.#text.getId());
@@ -80,7 +81,7 @@ const zeroPadding = (num) => {
 
 // all word count
 const duringInput = () => {
-  let textarea = document.getElementById("textarea").value;
+  let textarea = document.getElementById("editor-textarea").value;
   let count_num = document.getElementById("count_num");
 
   count_num.innerText = textarea.replace(/\s+/g, '').length;
@@ -89,7 +90,7 @@ const duringInput = () => {
 }
 
 const innsertText = async () => {
-  const text = document.getElementById('textarea').value;
+  const text = document.getElementById('editor-textarea').value;
   if (text === "" || text === undefined) {
     return;
   }
@@ -140,6 +141,21 @@ const setHistoryList = async () => {
   });
 }
 
+
+const updateContent = () => {
+  document.getElementById('preview-content').innerHTML = marked.parse(document.getElementById('editor-textarea').value);
+  hljs.highlightAll();
+}
+const showEditor = () => {
+  document.getElementById('editor').classList.remove('d-none');
+  document.getElementById('editor').style.width = '100%';
+  document.getElementById('preview').classList.add('d-none');
+}
+const showPreview = () => {
+  document.getElementById('editor').classList.add('d-none');
+  document.getElementById('preview').classList.remove('d-none');
+}
+
 // selection word count
 document.onselectionchange = () => {
   let sel_text = document.getSelection().toString();
@@ -149,15 +165,28 @@ document.onselectionchange = () => {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("font_size_range").addEventListener('input', (e) => {
-    $("textarea").css("fontSize", String(e.target.value) + "px");
+  
+  updateContent();
+  showEditor();
+
+  document.getElementById('editOnly-btn').addEventListener('click', showEditor);
+  document.getElementById('previewOnly-btn').addEventListener('click', showPreview);
+  document.getElementById('editor-textarea').addEventListener('input', updateContent);
+  document.getElementById('viewWidthRange').addEventListener('change', (e) => {
+    document.getElementById('editor').classList.remove('d-none');
+    document.getElementById('editor').style.width = `${e.target.value}%`;
+    document.getElementById('preview').classList.remove('d-none');
+  });
+
+  document.getElementById("font_size_range").addEventListener('change', (e) => {
+    document.getElementById("editor-textarea").style.fontSize = `${e.target.value}px`;
     document.getElementById("font_size_num").innerText = e.target.value;
   });
 
   document.getElementById("clipboard-btn").addEventListener('click', () => {
     if (!isClipboardCheck) {
       document.getElementById('clipboard-btn-svg').setAttribute("xlink:href", "#clipboard_check");
-      document.getElementById('textarea').select();
+      document.getElementById('editor-textarea').select();
       document.execCommand("copy");
       isClipboardCheck = true;
     }
