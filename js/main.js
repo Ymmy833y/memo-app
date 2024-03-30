@@ -31,7 +31,7 @@ class HistoryItem {
     const contentForFunc = document.createElement("div");
     contentForFunc.classList.add("col-1", "p-0");
     const displayBtn = document.createElement("button");
-    displayBtn.classList.add("btn", "btn-outline-secondary", "w-100", "mb-1");
+    displayBtn.classList.add("btn", "btn-outline-secondary", "w-100", "mb-1", "px-0");
     const displayDetailText = document.createElement("div");
     displayDetailText.classList.add("d-none", "d-sm-inline");
     displayDetailText.innerText = "表示";
@@ -42,7 +42,7 @@ class HistoryItem {
     displayBtn.appendChild(displayDetailIcon);
     contentForFunc.appendChild(displayBtn);
     const removeBtn = document.createElement("button");
-    removeBtn.classList.add("btn", "btn-outline-danger", "w-100");
+    removeBtn.classList.add("btn", "btn-outline-danger", "w-100", "px-0");
     const removeDetailText = document.createElement("div");
     removeDetailText.classList.add("d-none", "d-sm-inline");
     removeDetailText.innerText = "削除";
@@ -73,7 +73,7 @@ class HistoryItem {
 
 const formatDateTime = (dateTime) => {
   const d = new Date(dateTime);
-  return `${zeroPadding(d.getMonth()+1)}-${zeroPadding(d.getDate())} ${zeroPadding(d.getHours())}:${zeroPadding(d.getMinutes())}`;
+  return `${zeroPadding(d.getMonth()+1)}/${zeroPadding(d.getDate())} ${zeroPadding(d.getHours())}:${zeroPadding(d.getMinutes())}`;
 }
 const zeroPadding = (num) => {
   return ('00' + num).slice(-2);
@@ -115,7 +115,7 @@ const removeText = async (id) => {
 }
 
 const createIconElem = (id) => {
-  return `<svg width="20" height="20" fill="currentColor"><use xlink:href="#${id}"></use></svg>`
+  return `<svg class="bi" width="20" height="20" fill="currentColor"><use xlink:href="#${id}"></use></svg>`
 }
 const toggleAutoSave = (checked) => {
   isAutoSave = checked;
@@ -143,6 +143,7 @@ const setHistoryList = async () => {
 
 
 const updateContent = () => {
+  duringInput();
   document.getElementById('preview-content').innerHTML = marked.parse(document.getElementById('editor-textarea').value);
   hljs.highlightAll();
 }
