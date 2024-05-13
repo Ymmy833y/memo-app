@@ -220,6 +220,10 @@ window.addEventListener('DOMContentLoaded', () => {
     );
   });
 
+  document.getElementById('save-btn').addEventListener('click', async () => {
+    innsertText();
+  });
+
   document.getElementById('menu-btn').addEventListener('click', async () => {
     setHistoryList();
   });
