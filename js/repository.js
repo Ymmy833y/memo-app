@@ -15,8 +15,8 @@ class Text {
   }
 
   setId(id) { this.#id = id }
-  setName(text) { this.#text = text }
-  setBirthday(createAt) { this.#createAt = createAt }
+  setText(text) { this.#text = text }
+  setCreateAt(createAt) { this.#createAt = createAt }
 
   getId() { return this.#id }
   getText() { return this.#text }

@@ -79,7 +79,11 @@ const innsertText = async () => {
   }
 
   const result = await textDB.selectAll();
-  if (result.data.length === 0 || text !== result.data[result.data.length - 1].getText()) {
+  const exist = result.data.find(data => data.getText() === text);
+  if (exist) {
+    exist.setCreateAt(new Date());
+    await textDB.update(exist.generateRow());
+  } else {
     const t = new Text({ text: text, create_at: new Date() });
     await textDB.innsert(t.generateRow());
   }
