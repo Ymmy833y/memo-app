@@ -23,6 +23,12 @@
 
 <body>
   <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="icon" viewBox="0 0 16 16">
+      <path
+        d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+      <path fill-rule="evenodd"
+        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+    </symbol>
     <symbol id="clipboard_default" viewBox="0 0 16 16">
       <path
         d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z">
@@ -51,7 +57,8 @@
         d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
     </symbol>
     <symbol id="save" viewBox="0 0 16 16">
-      <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+      <path
+        d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
     </symbol>
     <symbol id="checked" viewBox="0 0 16 16">
       <path
@@ -83,71 +90,98 @@
       <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
     </symbol>
   </svg>
-  <header class="container text-center">
-    <div class="pt-3">
-      <div class="d-flex">
-        <div class="flex-grow-1">
-          <h5>全体： <strong id="count_num">0</strong></h5>
-        </div>
-        <div class="flex-grow-1">
-          <h5>選択： <strong id="sel_count_num">0</strong></h5>
-        </div>
-        <button id="clipboard-btn" class="btn btn-outline-primary">
-          <svg width="20" height="20" fill="currentColor">
-            <use id="clipboard-btn-svg" xlink:href="#clipboard_default"></use>
-          </svg>
-        </button>
-        <button id="darkmode-btn" class="btn btn-outline-primary ms-2">
-          <svg width="20" height="20" fill="currentColor">
-            <use id="darkmode-btn-svg" xlink:href="#dark_mode"></use>
-          </svg>
-        </button>
-        <button id="save-btn" class="btn btn-outline-primary ms-2">
-          <svg width="20" height="20" fill="currentColor">
-            <use id="darkmode-btn-svg" xlink:href="#save"></use>
-          </svg>
-        </button>
-        <button id="menu-btn" class="btn btn-outline-primary ms-2" type="button" data-bs-toggle="offcanvas"
-          data-bs-target="#offcanvas" aria-controls="offcanvas">
-          <svg width="20" height="20" fill="currentColor">
-            <use id="menu-btn-svg" xlink:href="#menu"></use>
-          </svg>
-        </button>
+  <header class="container">
+    <div class="d-flex flex-wrap justify-content-center pt-3">
+      <div class="align-items-center me-auto">
+        <a href="/" class="text-body text-decoration-none">
+          <span class="fs-4">MemoApp</span>
+        </a>
       </div>
-      <div class="offcanvas offcanvas-end w-75" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
-        <div class="offcanvas-header d-flex justify-content-between">
-          <h5 id="offcanvasLabel">履歴</h5>
-          <div class="d-flex align-items-center">
-            <input type="checkbox" class="btn-check" id="autoSave" autocomplete="off" checked>
-            <label class="btn btn-outline-secondary me-3" for="autoSave">自動保存 <span id="autoSaveIcon"
-                class="text-success">
-                <svg width="20" height="20" fill="currentColor">
-                  <use id="autoSaveIcon-btn-svg" xlink:href="#checked"></use>
-                </svg>
-              </span></label>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-          </div>
-        </div>
-        <div class="offcanvas-body">
-          <ul id="historyList" class="list-group list-group-flush text-start"></ul>
+      <button id="clipboard-btn" class="btn btn-outline-primary">
+        <svg width="20" height="20" fill="currentColor">
+          <use id="clipboard-btn-svg" xlink:href="#clipboard_default"></use>
+        </svg>
+      </button>
+      <button id="save-btn" class="btn btn-outline-primary ms-2">
+        <svg width="20" height="20" fill="currentColor">
+          <use id="save" xlink:href="#save"></use>
+        </svg>
+      </button>
+      <button id="menu-btn" class="btn btn-outline-primary ms-2" type="button" data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvas" aria-controls="offcanvas">
+        <svg width="20" height="20" fill="currentColor">
+          <use id="menu-btn-svg" xlink:href="#menu"></use>
+        </svg>
+      </button>
+    </div>
+    <div class="offcanvas offcanvas-end w-75" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+      <div class="offcanvas-header d-flex justify-content-between">
+        <h5 id="offcanvasLabel">履歴</h5>
+        <div class="d-flex align-items-center">
+          <button id="darkmode-btn" class="btn btn-outline-secondary me-2">
+            <svg width="20" height="20" fill="currentColor">
+              <use id="darkmode-btn-svg" xlink:href="#dark_mode"></use>
+            </svg>
+          </button>
+          <input type="checkbox" class="btn-check" id="autoSave" autocomplete="off" checked>
+          <label class="btn btn-outline-secondary me-3" for="autoSave">自動保存 <span id="autoSaveIcon"
+              class="text-success">
+              <svg width="20" height="20" fill="currentColor">
+                <use id="autoSaveIcon-btn-svg" xlink:href="#checked"></use>
+              </svg>
+            </span></label>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
       </div>
-      <div class="my-2">
-        <div class="row">
-          <div class="col-2">
-            <span>Font size</span>
-          </div>
-          <div class="col-8 d-flex align-items-center">
-            <input type="range" class="w-100" id="font_size_range" min="10" max="80" step="1" value="14">
-          </div>
-          <div class="col-2">
-            <strong id="font_size_num">14</strong>
-          </div>
-        </div>
+      <div class="offcanvas-body">
+        <ul id="historyList" class="list-group list-group-flush text-start"></ul>
       </div>
+    </div>
   </header>
   <hr>
   <main class="container-lg">
+    <div class="accordion accordion-flush mb-2 border rounded" id="accordion">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="accordion-header" id="word_count_header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#word_count_body" aria-expanded="false" aria-controls="word_count_body">
+              word count
+            </button>
+          </h2>
+        </div>
+        <div class="col-6">
+          <h2 class="accordion-header" id="font_size_header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#font_size_body" aria-expanded="false" aria-controls="font_size_body">
+              font size
+            </button>
+          </h2>
+        </div>
+      </div>
+      <div>
+        <div id="word_count_body" class="accordion-collapse collapse" aria-labelledby="word_count_header" data-bs-parent="#accordion">
+          <div class="card card-body">
+            <div class="row">
+              <div class="col-6">
+                <span class="fs-5">全体：<strong id="count_num">0</strong></span>
+              </div>
+              <div class="col-6">
+                <span class="fs-5">選択：<strong id="sel_count_num">0</strong></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="font_size_body" class="accordion-collapse collapse" aria-labelledby="font_size_header" data-bs-parent="#accordion">
+          <div class="card card-body">
+            <div class="row align-items-center">
+              <div class="col-10">
+                <input type="range" class="w-100" id="font_size_range" min="10" max="80" step="1" value="14">
+              </div>
+              <div class="col-2"><span class="fs-5" id="font_size_num">14</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="col-3">
         <button class="btn btn-outline-success w-100" id="editOnly-btn" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Editor only">
