@@ -175,6 +175,12 @@ const formatting = (format) => {
   updateContent();
 }
 
+const getResponsiveWidth = () => {
+  if (768 <= window.innerWidth) {
+    return '75%';
+  }
+  return '100%';
+}
 
 window.addEventListener('DOMContentLoaded', () => {
   
@@ -229,6 +235,8 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('menu-btn').addEventListener('click', async () => {
+    console.log(document.getElementById('offcanvas'), getResponsiveWidth());
+    document.getElementById('offcanvas').style.width = getResponsiveWidth();
     setHistoryList();
   });
 

@@ -97,24 +97,24 @@
           <span class="fs-4">MemoApp</span>
         </a>
       </div>
-      <button id="clipboard-btn" class="btn btn-outline-primary">
+      <button id="clipboard-btn" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="copy">
         <svg width="20" height="20" fill="currentColor">
           <use id="clipboard-btn-svg" xlink:href="#clipboard_default"></use>
         </svg>
       </button>
-      <button id="save-btn" class="btn btn-outline-primary ms-2">
+      <button id="save-btn" class="btn btn-outline-primary ms-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="save">
         <svg width="20" height="20" fill="currentColor">
           <use id="save" xlink:href="#save"></use>
         </svg>
       </button>
       <button id="menu-btn" class="btn btn-outline-primary ms-2" type="button" data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvas" aria-controls="offcanvas">
+        data-bs-target="#offcanvas" aria-controls="offcanvas" data-bs-toggle="tooltip" data-bs-placement="bottom" title="menu">
         <svg width="20" height="20" fill="currentColor">
           <use id="menu-btn-svg" xlink:href="#menu"></use>
         </svg>
       </button>
     </div>
-    <div class="offcanvas offcanvas-end w-75" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
       <div class="offcanvas-header d-flex justify-content-between">
         <h5 id="offcanvasLabel">履歴</h5>
         <div class="d-flex align-items-center">
