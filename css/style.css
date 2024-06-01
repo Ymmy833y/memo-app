@@ -19,10 +19,6 @@ p {
   width: 50%;
 }
 
-li {
-  margin-bottom: 0.5em;
-}
-
 #editor-textarea,
 #preview-content {
   padding: 5px;
