@@ -28,7 +28,7 @@ class HistoryItem {
     contentForDate.innerText = formatDateTime(this.#text.getCreateAt());
     const contentForText = document.createElement('div');
     contentForText.classList.add('col-9', 'historyItem');
-    contentForText.innerText = this.#text.getText();
+    contentForText.innerText = truncateAfterFifthNewline(this.#text.getText());
     const contentForFunc = document.createElement('div');
     contentForFunc.classList.add('col-1', 'p-0');
     const displayBtn = document.createElement('button');
@@ -235,7 +235,6 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('menu-btn').addEventListener('click', async () => {
-    console.log(document.getElementById('offcanvas'), getResponsiveWidth());
     document.getElementById('offcanvas').style.width = getResponsiveWidth();
     setHistoryList();
   });
