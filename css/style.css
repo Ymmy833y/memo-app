@@ -10,26 +10,6 @@ body * {
   font-size: 1em;
 }
 
-h1 {
-  font-size: 2em;
-}
-
-h2 {
-  font-size: 1.8em;
-}
-
-h3 {
-  font-size: 1.6em;
-}
-
-h4 {
-  font-size: 1.4em;
-}
-
-h5 {
-  font-size: 1.2em;
-}
-
 button,
 p {
   font-weight: bold;
@@ -52,6 +32,35 @@ p {
   font-family: "Yu Mincho Light", "YuMincho", "Yu Mincho", "sans-serif";
   font-weight: bold;
   line-height: 1.9;
+}
+
+#preview-content h1 {
+  font-size: 2em;
+  line-height: 2.5em;
+}
+
+#preview-content h2 {
+  font-size: 1.8em;
+  line-height: 2.2em;
+}
+
+#preview-content h3 {
+  font-size: 1.6em;
+  line-height: 1.8em;
+}
+
+#preview-content h4 {
+  font-size: 1.4em;
+  line-height: 1.5em;
+}
+
+#preview-content h5 {
+  font-size: 1.2em;
+  line-height: 1.2em;
+}
+
+#preview-content li {
+  margin-bottom: 0.5em;
 }
 
 #preview-content blockquote {

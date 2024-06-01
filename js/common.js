@@ -42,3 +42,21 @@ const formatDateTime = (dateTime) => {
   const d = new Date(dateTime);
   return `${zeroPadding(d.getMonth()+1)}/${zeroPadding(d.getDate())} ${zeroPadding(d.getHours())}:${zeroPadding(d.getMinutes())}`;
 }
+
+const truncateAfterFifthNewline = (str) => {
+  let newlineCount = 0;
+  let position = 0;
+
+  while (newlineCount < 5 && position !== -1) {
+    position = str.indexOf('\n', position);
+    if (position !== -1) {
+      newlineCount++;
+      position++;
+    }
+  }
+  if (newlineCount >= 5) {
+    return str.substring(0, position - 1) + "\n...";
+  }
+
+  return str;
+}
