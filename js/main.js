@@ -6,6 +6,8 @@ let isClipboardCheck = false;
 let isAutoSave = true;
 let autoSaveInterval = 3 * 60 * 1000;
 
+let texts = [];
+
 class HistoryItem {
   #ELEM;
   #text;
@@ -63,6 +65,7 @@ class HistoryItem {
       innsertText();
       document.getElementById('editor-textarea').value = this.#text.getText();
       updateContent();
+      hideOffcanvas();
     });
     removeBtn.addEventListener('click', () => {
       removeText(this.#text.getId());
@@ -70,6 +73,65 @@ class HistoryItem {
   }
 
   getElem = () => { return this.#ELEM }
+}
+
+class HistroyItemForSearch {
+  #ELEM;
+  #text;
+  #positions;
+  /**
+   * @param {Text} text 
+   * @param {String} word 
+   */
+  constructor(text, word) {
+    this.#ELEM = document.createElement('button');
+    this.#text = text;
+    this.#positions = findAllOccurrences(this.#text.getText(), word);
+
+    this.#createElem();
+  }
+
+  #createElem() {
+    this.#ELEM.classList.add("list-group-item", "list-group-item-action");
+    const firstPostion = this.#positions[0];
+    const linePosition = getLinePosition(this.#text.getText(), firstPostion);
+    
+    this.#ELEM.innerHTML = highlightSearchWords(
+      this.#text.getText().slice(linePosition.startOfLine, linePosition.endOfLine), 
+      this.#positions
+        .filter(({ start }) => start <= linePosition.endOfLine)
+        .map(({ start, end }) => ({
+          start: start - linePosition.startOfLine,
+          end: end - linePosition.startOfLine
+        }))
+    );
+
+    this.#ELEM.addEventListener('click', () => this.#renderDetailElem());
+    this.#ELEM.addEventListener('dblclick', () => this.#renderEditorElem());
+  }
+
+  #renderDetailElem() {
+    const searchItemDetailElem = document.getElementById('search-item-detail');
+    const searchItemDateElem = document.getElementById('search-item-date');
+    const searchItemDisplayBtnElem = document.getElementById('search-item-display-btn');
+    const searchItemTextElem = document.getElementById('search-item-text');
+    searchItemDetailElem.classList.remove('d-none');
+
+    searchItemDateElem.innerText = formatDateTime(this.#text.getCreateAt());
+    searchItemTextElem.innerHTML = highlightSearchWords(this.#text.getText(), this.#positions);    
+
+    searchItemDisplayBtnElem.addEventListener('click', () => this.#renderEditorElem());
+  }
+
+  #renderEditorElem() {
+    innsertText();
+    document.getElementById('editor-textarea').value = this.#text.getText();
+    updateContent();
+    hideModal();
+    hideOffcanvas();
+  }
+
+  getElem() { return this.#ELEM; }
 }
 
 const innsertText = async () => {
@@ -119,7 +181,8 @@ const setHistoryList = async () => {
   const historyListElem = document.getElementById('historyList');
   historyListElem.innerHTML = '';
   const result = await textDB.selectAll();
-  result.data.sort((a, b) => b.getCreateAt() - a.getCreateAt()).forEach(text => {
+  texts = result.data;
+  texts.sort((a, b) => b.getCreateAt() - a.getCreateAt()).forEach(text => {
     const historyItem = new HistoryItem(text);
     historyListElem.appendChild(historyItem.getElem());
   });
@@ -161,13 +224,13 @@ document.onselectionchange = () => {
 
 /**
  * apply MD format to editor
- * @param {FORMAT_DEFAULT_OPTION} format 
+ * @param {SHORTCUT_OPTION} format 
  */
 const formatting = (format) => {
   const textarea = document.getElementById('editor-textarea');
   const { value, selectionStart, selectionEnd } = textarea;
 
-  textarea.value = format.format({
+  textarea.value = format.func({
     beforeCursor: value.substring(0, selectionStart),
     select: value.substring(selectionStart, selectionEnd),
     afterCursor: value.substring(selectionEnd),
@@ -181,6 +244,10 @@ const getResponsiveWidth = () => {
   }
   return '100%';
 }
+
+const hideOffcanvas = () => document.getElementById('offcanvas-close').click();
+const hideModal = () => document.getElementById('modal-close').click();
+const showModal = () => document.getElementById('search-btn').click();
 
 window.addEventListener('DOMContentLoaded', () => {
   
@@ -241,7 +308,35 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('autoSave').addEventListener('click', (e) => {
     toggleAutoSave(e.target.checked);
-  })
+  });
+
+  // search history
+  document.getElementById('search-btn').addEventListener('click', (e) => {
+    setHistoryList();
+    setTimeout(() => document.getElementById('search-word').focus(), 500);
+  });
+
+  document.getElementById('search-item-display-close-btn').addEventListener('click', (e) => {
+    const searchItemDetailElem = document.getElementById('search-item-detail');
+    searchItemDetailElem.classList.add('d-none');
+  });
+
+  document.getElementById('search-word').addEventListener('input', (e) => {
+    const { value } = e.target;
+    if (value === '') return;
+
+    const searchItemsElem = document.getElementById('search-items');
+    const searchItemDetailElem = document.getElementById('search-item-detail');
+    searchItemsElem.innerHTML = '';
+    searchItemDetailElem.classList.add('d-none');
+
+    const filteredText = texts.filter(text => text.getText().includes(value));
+    if (filteredText.length === 0) {
+      searchItemsElem.innerHTML = `<p class="text-center py-5">「${value}」に一致するデータは見つかりませんでした。</p>`;
+    } else {
+      filteredText.forEach(text => searchItemsElem.appendChild(new HistroyItemForSearch(text, value).getElem()));
+    }
+  });
 
   // auto save
   setInterval(() => {
@@ -251,14 +346,19 @@ window.addEventListener('DOMContentLoaded', () => {
   }, autoSaveInterval);
 });
 
-// apply formatting when shortcut key is pressed
+// perform a specific action when a shortcut key is pressed
 document.addEventListener('keydown', (keyboardEvent) => {
-  const format = getFormat(keyboardEvent);
-  if (format === null) {
+  const shortcut = getShortcut(keyboardEvent);
+  if (shortcut === null) {
     return;
   }
 
-  formatting(format);
+  if (!shortcut.isFormat) {
+    shortcut.func();
+    return;
+  }
+
+  formatting(shortcut);
 });
 
 // auto save when screen is closed

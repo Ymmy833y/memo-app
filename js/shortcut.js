@@ -49,30 +49,31 @@ const formatToCodeBlock = ({ beforeCursor, select, afterCursor }) => {
   return beforeCursor + '```\n' + select + '\n```' + afterCursor;
 }
 
-const FORMAT_DEFAULT_OPTION = {
-  bold: { ctrl: true, shift: false, alt: false, keyCode: 'KeyB', format: formatToBold },
-  italic: { ctrl: true, shift: false, alt: false, keyCode: 'KeyI', format: formatToItalic },
-  strikethrough: { ctrl: true, shift: true, alt: false, keyCode: 'KeyX', format: formatToStrikethrough },
-  quote: { ctrl: true, shift: true, alt: false, keyCode: 'Digit9', format: formatToQuote },
-  code: { ctrl: true, shift: true, alt: false, keyCode: 'KeyC', format: formatToCode },
-  codeBlock: { ctrl: true, shift: true, alt: true, keyCode: 'KeyC', format: formatToCodeBlock },
-  // unorderedList: { ctrl: true, shift: true, alt: false, keyCode: 'Digit8' },
-  // orderedList: { ctrl: true, shift: true, alt: false, keyCode: 'Digit7' },
+const SHORTCUT_OPTION = {
+  bold: { ctrl: true, shift: false, alt: false, keyCode: 'KeyB', isFormat: true, func: formatToBold },
+  italic: { ctrl: true, shift: false, alt: false, keyCode: 'KeyI', isFormat: true, func: formatToItalic },
+  strikethrough: { ctrl: true, shift: true, alt: false, keyCode: 'KeyX', isFormat: true, func: formatToStrikethrough },
+  quote: { ctrl: true, shift: true, alt: false, keyCode: 'Digit9', isFormat: true, func: formatToQuote },
+  code: { ctrl: true, shift: true, alt: false, keyCode: 'KeyC', isFormat: true, func: formatToCode },
+  codeBlock: { ctrl: true, shift: true, alt: true, keyCode: 'KeyC', isFormat: true, func: formatToCodeBlock },
+  // unorderedList: { ctrl: true, shift: true, alt: false, keyCode: 'Digit8', isFormat: true },
+  // orderedList: { ctrl: true, shift: true, alt: false, keyCode: 'Digit7', isFormat: true },
+  searchModal: { ctrl: true, shift: true, alt: false, keyCode: 'KeyF', isFormat: false, func: showModal },
 };
 
 /**
- * get FORMAT_DEFAULT_OPTION 
+ * get SHORTCUT_OPTION 
  * @param {KeyboardEvent} keyboardEvent 
- * @returns {@link FORMAT_DEFAULT_OPTION} || null
+ * @returns {SHORTCUT_OPTION || null}
  */
-const getFormat = (keyboardEvent) => {
+const getShortcut = (keyboardEvent) => {
   if (!keyboardEvent instanceof KeyboardEvent) {
     return null;
   }
 
   const { ctrlKey, shiftKey, altKey, code } = keyboardEvent;
 
-  for (const [format, option] of Object.entries(FORMAT_DEFAULT_OPTION)) {
+  for (const [format, option] of Object.entries(SHORTCUT_OPTION)) {
     const { ctrl, shift, alt, keyCode } = option;
     if (
       ctrl === ctrlKey &&
@@ -80,7 +81,7 @@ const getFormat = (keyboardEvent) => {
       alt === altKey &&
       keyCode === code
     ) {
-      return FORMAT_DEFAULT_OPTION[format];
+      return SHORTCUT_OPTION[format];
     }
   }
 

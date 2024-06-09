@@ -107,3 +107,13 @@ p {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+html[data-bs-theme="dark"] .search-word {
+  background-color: darkgreen;
+  font-weight: bold;
+}
+
+html[data-bs-theme="light"] .search-word {
+  background-color: lightgreen;
+  font-weight: bold;
+}
