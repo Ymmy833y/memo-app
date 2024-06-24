@@ -7,32 +7,60 @@ let isAutoSave = true;
 let autoSaveInterval = 3 * 60 * 1000;
 
 let texts = [];
+let removalTexts = [];
 
-class HistoryItem {
-  #ELEM;
-  #text;
+let isCaseSensitive = false;
+
+class TextRenderer {
+  ELEM;
+  text;
   /**
    * @param {Text} text 
    */
   constructor(text) {
-    this.#ELEM = document.createElement('li');
-    this.#text = text;
+    this.ELEM = document.createElement('li');
+    this.text = text;
 
     this.#createElem();
   }
 
   #createElem = () => {
-    this.#ELEM.classList.add('list-group-item');
+    this.ELEM.classList.add('list-group-item');
     const row = document.createElement('div');
     row.classList.add('row');
-    const contentForDate = document.createElement('div');
-    contentForDate.classList.add('col-2');
-    contentForDate.innerText = formatDateTime(this.#text.getCreateAt());
-    const contentForText = document.createElement('div');
-    contentForText.classList.add('col-9', 'historyItem');
-    contentForText.innerText = truncateAfterFifthNewline(this.#text.getText());
-    const contentForFunc = document.createElement('div');
-    contentForFunc.classList.add('col-1', 'p-0');
+
+    this.contentForDate = document.createElement('div');
+    this.contentForDate.classList.add('col-12', 'col-md-2', 'fw-bold', 'px-0', 'pb-1', 'px-md-0');
+    this.contentForDate.innerText = formatDateTime(this.text.getCreateAt());
+    
+    this.contentForText = document.createElement('div');
+    this.contentForText.classList.add('col-10', 'col-md-9', 'historyItem', 'px-0', 'px-md-2');
+    this.contentForText.innerText = truncateAfterFifthNewline(this.text.getText());
+    
+    this.contentForFunc = document.createElement('div');
+    this.contentForFunc.classList.add('col-2', 'col-md-1', 'p-0');
+
+    row.appendChild(this.contentForDate);
+    row.appendChild(this.contentForText);
+    row.appendChild(this.contentForFunc);
+    this.ELEM.appendChild(row);
+  }
+
+  getElem = () => { return this.ELEM }
+}
+
+class HistoryItem extends TextRenderer {
+  /**
+   * @param {Text} text 
+   */
+  constructor(text) {
+    super(text);
+
+    this.#createDisplayBtn();
+    this.#createRomoveBtn();
+  }
+
+  #createDisplayBtn = () => {
     const displayBtn = document.createElement('button');
     displayBtn.classList.add('btn', 'btn-outline-secondary', 'w-100', 'mb-1', 'px-0');
     const displayDetailText = document.createElement('div');
@@ -43,7 +71,17 @@ class HistoryItem {
     displayDetailIcon.classList.add('d-sm-none');
     displayDetailIcon.innerHTML = createIconElem('indicate');
     displayBtn.appendChild(displayDetailIcon);
-    contentForFunc.appendChild(displayBtn);
+    this.contentForFunc.appendChild(displayBtn);
+
+    displayBtn.addEventListener('click', () => {
+      innsertText();
+      document.getElementById('editor-textarea').value = this.text.getText();
+      updateContent();
+      hideOffcanvas();
+    });
+  }
+
+  #createRomoveBtn = () => {
     const removeBtn = document.createElement('button');
     removeBtn.classList.add('btn', 'btn-outline-danger', 'w-100', 'px-0');
     const removeDetailText = document.createElement('div');
@@ -54,25 +92,49 @@ class HistoryItem {
     removeDetailIcon.classList.add('d-sm-none');
     removeDetailIcon.innerHTML = createIconElem('remove');
     removeBtn.appendChild(removeDetailIcon);
-    contentForFunc.appendChild(removeBtn);
+    this.contentForFunc.appendChild(removeBtn);
 
-    row.appendChild(contentForDate);
-    row.appendChild(contentForText);
-    row.appendChild(contentForFunc);
-    this.#ELEM.appendChild(row);
+    removeBtn.addEventListener('click', () => {
+      removeText(this.text);
+    });
+  }
+}
 
-    displayBtn.addEventListener('click', () => {
+class RemovalItem extends TextRenderer {
+  constructor(text) {
+    super(text);
+    
+    this.#createRecoveryBtn();
+  }
+  
+  #createRecoveryBtn = () => {
+    const recoveryBtn = document.createElement('button');
+    recoveryBtn.classList.add('btn', 'btn-outline-info', 'w-100', 'px-0');
+    const recoveryDetailText = document.createElement('div');
+    recoveryDetailText.classList.add('d-none', 'd-sm-inline');
+    recoveryDetailText.innerText = '復元';
+    recoveryBtn.appendChild(recoveryDetailText);
+    const recoveryDetailIcon = document.createElement('div');
+    recoveryDetailIcon.classList.add('d-sm-none');
+    recoveryDetailIcon.innerHTML = createIconElem('remove');
+    recoveryBtn.appendChild(recoveryDetailIcon);
+    this.contentForFunc.appendChild(recoveryBtn);
+
+    recoveryBtn.addEventListener('click', () => {
+      const indexToRemovalText = removalTexts.findIndex(t => t.getId() === this.text.getId());
+      if (indexToRemovalText < 0) {
+        return;
+      }
+
+      removalTexts.splice(indexToRemovalText, 1);
+      if (removalTexts.length <= 0) document.getElementById('recovery-btn').disabled = true;
       innsertText();
-      document.getElementById('editor-textarea').value = this.#text.getText();
+      document.getElementById('editor-textarea').value = this.text.getText();
       updateContent();
+      hideModal();
       hideOffcanvas();
     });
-    removeBtn.addEventListener('click', () => {
-      removeText(this.#text.getId());
-    })
   }
-
-  getElem = () => { return this.#ELEM }
 }
 
 class HistroyItemForSearch {
@@ -82,11 +144,12 @@ class HistroyItemForSearch {
   /**
    * @param {Text} text 
    * @param {String} word 
+   * @param {boolean} isCaseSensitive 
    */
-  constructor(text, word) {
+  constructor(text, word, isCaseSensitive) {
     this.#ELEM = document.createElement('button');
     this.#text = text;
-    this.#positions = findAllOccurrences(this.#text.getText(), word);
+    this.#positions = findAllOccurrences(this.#text.getText(), word, isCaseSensitive);
 
     this.#createElem();
   }
@@ -151,16 +214,20 @@ const innsertText = async () => {
   }
 }
 
-const removeText = async (id) => {
+const removeText = async (text) => {
+  const id = text.getId();
   if (id === undefined) {
     return;
   }
+
   textDB.deleteById(id).then((resuponse) => {
     console.info(resuponse);
+    removalTexts.push(text);
+    document.getElementById('recovery-btn').disabled = false;
     setHistoryList();
   }).catch((resuponse) => {
     console.error(resuponse);
-  })
+  });
 }
 
 const toggleAutoSave = (checked) => {
@@ -238,6 +305,36 @@ const formatting = (format) => {
   updateContent();
 }
 
+const copyText = () => {
+  if (!isClipboardCheck) {
+    document.getElementById('clipboard-btn-svg').setAttribute('xlink:href', '#clipboard_check');
+    document.getElementById('editor-textarea').select();
+    document.execCommand('copy');
+    isClipboardCheck = true;
+  }
+}
+
+const searchTextForHistory = (searchString) => {
+  if (searchString === '') return;
+
+  const searchItemsElem = document.getElementById('search-items');
+  const searchItemDetailElem = document.getElementById('search-item-detail');
+  searchItemsElem.innerHTML = '';
+  searchItemDetailElem.classList.add('d-none');
+
+  const filteredText = texts.filter(text => {
+    let t = isCaseSensitive ? text.getText().toLocaleLowerCase() : text.getText();
+    let s = isCaseSensitive ? searchString.toLocaleLowerCase() : searchString;
+    return t.includes(s);
+  });
+
+  if (filteredText.length === 0) {
+    searchItemsElem.innerHTML = `<p class="text-center py-5">「${searchString}」に一致するデータは見つかりませんでした。</p>`;
+  } else {
+    filteredText.forEach(text => searchItemsElem.appendChild(new HistroyItemForSearch(text, searchString, isCaseSensitive).getElem()));
+  }
+}
+
 const getResponsiveWidth = () => {
   if (768 <= window.innerWidth) {
     return '75%';
@@ -246,7 +343,14 @@ const getResponsiveWidth = () => {
 }
 
 const hideOffcanvas = () => document.getElementById('offcanvas-close').click();
-const hideModal = () => document.getElementById('modal-close').click();
+const hideModal = (modalId) => {
+  const clsoeModals = (modalId && document.getElementById(modalId)) 
+    ? document.getElementById(modalId).getElementsByClassName('modal-close')
+    : document.getElementsByClassName('modal-close');
+  for (let i = 0; i < clsoeModals.length; i ++) {
+    clsoeModals[i].click();    
+  }
+};
 const showModal = () => document.getElementById('search-btn').click();
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -269,14 +373,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('font_size_num').innerText = e.target.value;
   });
 
-  document.getElementById('clipboard-btn').addEventListener('click', () => {
-    if (!isClipboardCheck) {
-      document.getElementById('clipboard-btn-svg').setAttribute('xlink:href', '#clipboard_check');
-      document.getElementById('editor-textarea').select();
-      document.execCommand('copy');
-      isClipboardCheck = true;
-    }
-  });
+  document.getElementById('clipboard-btn').addEventListener('click', copyText);
 
   // dark mode
   const toggleDarkMode = (isDark = true) => {
@@ -323,19 +420,20 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('search-word').addEventListener('input', (e) => {
     const { value } = e.target;
-    if (value === '') return;
+    searchTextForHistory(value);
+  });
 
-    const searchItemsElem = document.getElementById('search-items');
-    const searchItemDetailElem = document.getElementById('search-item-detail');
-    searchItemsElem.innerHTML = '';
-    searchItemDetailElem.classList.add('d-none');
+  document.getElementById('search-isCaseSensitive').addEventListener('click', (e) => {
+    isCaseSensitive = e.target.checked;
+    const value = document.getElementById('search-word').value;
+    searchTextForHistory(value);
+  });
 
-    const filteredText = texts.filter(text => text.getText().includes(value));
-    if (filteredText.length === 0) {
-      searchItemsElem.innerHTML = `<p class="text-center py-5">「${value}」に一致するデータは見つかりませんでした。</p>`;
-    } else {
-      filteredText.forEach(text => searchItemsElem.appendChild(new HistroyItemForSearch(text, value).getElem()));
-    }
+  // recovery
+  document.getElementById('recovery-btn').addEventListener('click', (e) => {
+    const recoveryItems = document.getElementById('recovery-items');
+    recoveryItems.innerHTML = '';
+    removalTexts.forEach(text => recoveryItems.appendChild(new RemovalItem(text).getElem()));
   });
 
   // auto save

@@ -59,6 +59,8 @@ const SHORTCUT_OPTION = {
   // unorderedList: { ctrl: true, shift: true, alt: false, keyCode: 'Digit8', isFormat: true },
   // orderedList: { ctrl: true, shift: true, alt: false, keyCode: 'Digit7', isFormat: true },
   searchModal: { ctrl: true, shift: true, alt: false, keyCode: 'KeyF', isFormat: false, func: showModal },
+  saveText: { ctrl: true, shift: true, alt: false, keyCode: 'KeyS', isFormat: false, func: innsertText },
+  copyText: { ctrl: true, shift: false, alt: true, keyCode: 'KeyC', isFormat: false, func: copyText },
 };
 
 /**

@@ -117,3 +117,7 @@ html[data-bs-theme="light"] .search-word {
   background-color: lightgreen;
   font-weight: bold;
 }
+
+#search-items, #search-item-detail {
+  height: 70vh;
+}

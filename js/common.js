@@ -61,7 +61,12 @@ const truncateAfterFifthNewline = (str) => {
   return str;
 }
 
-const findAllOccurrences = (text, searchString) => {
+const findAllOccurrences = (text, searchString, isCaseSensitive=false) => {
+  if (isCaseSensitive) {
+    text = text.toLocaleLowerCase();
+    searchString = searchString.toLocaleLowerCase();
+  }
+  
   const positions = [];
   const regex = new RegExp(searchString, 'g');
   let match;
