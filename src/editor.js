@@ -49,3 +49,11 @@ export function updateEditor() {
     initialValue: content,
   });
 }
+
+/**
+ * Returns the current editor instance.
+ * @returns {Editor|null}
+ */
+export function getEditorInstance() {
+  return editorInstance;
+}
