@@ -23,7 +23,25 @@ window.addEventListener('resize', () => {
 });
 
 // Listen for selection changes to update the count for selected text
-document.addEventListener('selectionchange', updateCount);
+document.addEventListener('selectionchange', () => {
+  updateCount();
+  setClipboardIcon('default');
+});
+
+// Set up the click event for the clipboard button
+document.getElementById('clipboard-btn').addEventListener('click', async () => {
+  const editor = getEditorInstance();
+  if (!editor) return;
+  const text = editor.getMarkdown();
+  try {
+    await navigator.clipboard.writeText(text);
+    // If successful, change the clipboard button icon to the "check" icon
+    setClipboardIcon('check');
+    console.log('Copied to clipboard successfully.');
+  } catch (err) {
+    console.error('Failed to copy text: ', err);
+  }
+});
 
 /**
  * Updates the character count display.
@@ -45,4 +63,18 @@ function updateCount() {
     .length;
   const countElem = document.getElementById('count');
   countElem.innerText = `Total Characters: ${total}, Selected Characters: ${selection}`;
+}
+
+/**
+ * Sets the clipboard button icon.
+ * @param {string} state - 'default' for the copy icon or 'check' for the complete icon.
+ */
+function setClipboardIcon(state) {
+  const clipboardBtn = document.getElementById('clipboard-btn');
+  const svgUse = clipboardBtn.querySelector('svg use');
+  if (state === 'check') {
+    svgUse.setAttribute('xlink:href', '#clipboard_check');
+  } else {
+    svgUse.setAttribute('xlink:href', '#clipboard_default');
+  }
 }
