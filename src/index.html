@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Memo App</title>
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/theme/toastui-editor-dark.min.css">
+  <link rel="stylesheet" href="./styles/tailwind.css">
+  <link rel="stylesheet" href="./styles/base.css">
+</head>
+
+<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+  <svg xmlns="http://www.w3.org/2000/svg" class="hidden">
+    <symbol id="clipboard_default" viewBox="0 0 16 16">
+      <path
+        d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z">
+      </path>
+      <path
+        d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z">
+      </path>
+    </symbol>
+    <symbol id="clipboard_check" viewBox="0 0 16 16">
+      <path fill-rule="evenodd"
+        d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3ZM4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3Z">
+      </path>
+    </symbol>
+    <symbol id="save" viewBox="0 0 16 16">
+      <path
+        d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
+    </symbol>
+    <symbol id="menu" viewBox="0 0 16 16">
+      <path fill-rule="evenodd"
+        d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+    </symbol>
+    <symbol id="dark_mode" viewBox="0 0 16 16">
+      <path
+        d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z" />
+    </symbol>
+    <symbol id="checked" viewBox="0 0 16 16">
+      <path
+        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+    </symbol>
+    <symbol id="unChecked" viewBox="0 0 16 16">
+      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+      <path
+        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+    </symbol>
+    <symbol id="close" viewBox="0 0 16 16">
+      <path
+        d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+    </symbol>
+    <symbol id="isCaseSensitive" viewBox="0 0 16 16">
+      <path
+        d="m2.244 13.081.943-2.803H6.66l.944 2.803H8.86L5.54 3.75H4.322L1 13.081h1.244zm2.7-7.923L6.34 9.314H3.51l1.4-4.156h.034zm9.146 7.027h.035v.896h1.128V8.125c0-1.51-1.114-2.345-2.646-2.345-1.736 0-2.59.916-2.666 2.174h1.108c.068-.718.595-1.19 1.517-1.19.971 0 1.518.52 1.518 1.464v.731H12.19c-1.647.007-2.522.8-2.522 2.058 0 1.319.957 2.18 2.345 2.18 1.06 0 1.716-.43 2.078-1.011zm-1.763.035c-.752 0-1.456-.397-1.456-1.244 0-.65.424-1.115 1.408-1.115h1.805v.834c0 .896-.752 1.525-1.757 1.525z" />
+    </symbol>
+    <symbol id="search" viewBox="0 0 16 16">
+      <path
+        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z">
+      </path>
+    </symbol>
+    <symbol id="isCaseSensitive" viewBox="0 0 16 16">
+      <path
+        d="m2.244 13.081.943-2.803H6.66l.944 2.803H8.86L5.54 3.75H4.322L1 13.081h1.244zm2.7-7.923L6.34 9.314H3.51l1.4-4.156h.034zm9.146 7.027h.035v.896h1.128V8.125c0-1.51-1.114-2.345-2.646-2.345-1.736 0-2.59.916-2.666 2.174h1.108c.068-.718.595-1.19 1.517-1.19.971 0 1.518.52 1.518 1.464v.731H12.19c-1.647.007-2.522.8-2.522 2.058 0 1.319.957 2.18 2.345 2.18 1.06 0 1.716-.43 2.078-1.011zm-1.763.035c-.752 0-1.456-.397-1.456-1.244 0-.65.424-1.115 1.408-1.115h1.805v.834c0 .896-.752 1.525-1.757 1.525z">
+      </path>
+    </symbol>
+  </svg>
+
+  <header class="max-w-7xl mx-auto px-4 py-1">
+    <div class="flex flex-wrap justify-between items-center pt-3">
+      <div class="flex items-center">
+        <a href="/" class="dark:text-gray-200 no-underline">
+          <span class="text-3xl font-serif">Memo App</span>
+        </a>
+      </div>
+      <div class="flex space-x-2">
+        <button id="clipboard-btn"
+          class="w-10 h-10 flex items-center justify-center border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white">
+          <svg width="20" height="20" fill="currentColor">
+            <use xlink:href="#clipboard_default"></use>
+          </svg>
+        </button>
+        <button id="save-btn"
+          class="w-10 h-10 flex items-center justify-center border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white">
+          <svg width="20" height="20" fill="currentColor">
+            <use xlink:href="#save"></use>
+          </svg>
+        </button>
+        <button id="menu-btn"
+          class="w-10 h-10 flex items-center justify-center border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white">
+          <svg width="20" height="20" fill="currentColor">
+            <use xlink:href="#menu"></use>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Side menu: appears from right; on small screens full width, on desktop 75% width -->
+  <div id="side-menu"
+    class="fixed top-0 right-0 h-full w-full md:w-[75%] bg-white dark:bg-gray-800 shadow-md transform translate-x-full transition-transform duration-300 z-50">
+    <div class="p-4 flex flex-col h-full">
+      <div class="flex justify-end space-x-4">
+        <button id="search-btn"
+          class="w-10 h-10 flex items-center justify-center border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white">
+          <svg width="20" height="20" fill="currentColor">
+            <use xlink:href="#search"></use>
+          </svg>
+        </button>
+        <button id="toggle-theme"
+          class="w-10 h-10 flex items-center justify-center border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white">
+          <svg width="20" height="20" fill="currentColor">
+            <use xlink:href="#dark_mode"></use>
+          </svg>
+        </button>
+        <!-- Auto-save button with text and icon -->
+        <button id="auto-save-btn"
+          class="flex items-center space-x-2 px-3 py-2 border border-blue-500 rounded hover:bg-blue-500 hover:text-white">
+          <span class="text-sm">Auto Save</span>
+          <svg width="20" height="20" fill="currentColor">
+            <use xlink:href="#unChecked"></use>
+          </svg>
+        </button>
+        <button id="close-menu-btn" class="text-gray-700 dark:text-gray-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <use xlink:href="#close"></use>
+          </svg>
+        </button>
+      </div>
+      <h2 class="text-xl font-bold mb-4">Saved Texts</h2>
+      <!-- List container for saved texts, scrollable if needed -->
+      <div class="flex-1 overflow-y-auto">
+        <ul id="side-menu-content" class="space-y-2"></ul>
+      </div>
+    </div>
+  </div>
+
+  <hr class="border-gray-700 my-2">
+
+  <main class="max-w-7xl mx-auto px-4">
+    <div id="editor"></div>
+    <div id="count" class="pt-5 text-sm"></div>
+  </main>
+
+  <!-- Search modal -->
+  <div id="search-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white dark:bg-gray-800 w-full max-w-6xl h-5/6 m-5 flex flex-col relative">
+      <!-- Top row: Close button -->
+      <div class="flex justify-end p-2">
+        <button id="close-search-btn"
+          class="p-2 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <use xlink:href="#close"></use>
+          </svg>
+        </button>
+      </div>
+      <!-- Search input row: full-width -->
+      <div class="flex items-center px-4">
+        <input id="search-input" type="text" placeholder="Enter search text"
+          class="flex-1 p-2 border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded" />
+        <button id="toggle-case-btn"
+          class="ml-2 p-2 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
+          <svg width="20" height="20" fill="currentColor">
+            <use xlink:href="#isCaseSensitive"></use>
+          </svg>
+        </button>
+      </div>
+      <!-- Search results section -->
+      <div id="search-container" class="flex flex-1 p-4 overflow-hidden">
+        <div id="search-results"
+          class="w-full overflow-y-auto border border-gray-200 dark:border-gray-700 rounded p-2 flex flex-col space-y-2">
+        </div>
+        <div id="search-preview"
+          class="hidden w-1/2 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded p-2 ml-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-bold mb-2">Preview</h2>
+            <!-- Display button is always present -->
+            <button id="preview-display-btn" class="bg-blue-500 hover:bg-blue-600 text-white text-xs rounded px-2 py-1">
+              Display
+            </button>
+          </div>
+          <div id="preview"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./index.js"></script>
+</body>
+
+</html>
