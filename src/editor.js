@@ -5,7 +5,7 @@ let editorInstance = null;
 
 /**
  * Computes the editor height as 80% of the viewport height.
- * @returns {string} The height in pixels (e.g., "600px").
+ * @returns {string} The height in pixels.
  */
 function getEditorHeight() {
   return `${window.innerHeight * 0.8}px`;
@@ -48,6 +48,18 @@ export function updateEditor() {
     theme: currentTheme,
     initialValue: content,
   });
+}
+
+/**
+ * Re-creates the editor with the specified text.
+ * @param {string} newText - The text to load into the editor.
+ */
+export function updateEditorWithText(newText) {
+  const editor = getEditorInstance();
+  if (editor) {
+    editor.destroy();
+  }
+  createEditor(newText);
 }
 
 /**

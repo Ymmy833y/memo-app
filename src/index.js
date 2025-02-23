@@ -1,9 +1,10 @@
-import { createEditor, updateEditor, getEditorInstance } from './editor.js';
+import { createEditor, updateEditor, getEditorInstance, updateEditorWithText } from './editor.js';
 import { getCurrentTheme, toggleStoredTheme, applyGlobalTheme } from './utils/theme.js';
 import { 
   getAutoSaveSetting, setAutoSaveSetting, updateAutoSaveIcon, 
   startAutoSave, stopAutoSave, setupAutoSaveOnUnload 
 } from './utils/autoSave.js';
+import { setupSearch } from './search.js';
 import { TextDB } from './db/TextDB.js';
 
 // On initial load, retrieve the theme and apply it globally
@@ -81,6 +82,21 @@ document.getElementById('close-menu-btn').addEventListener('click', () => {
   }
 });
 
+// Search button: shows search modal
+document.getElementById('search-btn').addEventListener('click', () => {
+  const searchModal = document.getElementById('search-modal');
+  searchModal.classList.remove('hidden');
+});
+
+// Close search modal
+document.getElementById('close-search-btn').addEventListener('click', () => {
+  const searchModal = document.getElementById('search-modal');
+  searchModal.classList.add('hidden');
+});
+
+// Set up search functionality (責務を分離)
+setupSearch(textDB);
+
 // Listen for window resize events and update the editor's height accordingly
 window.addEventListener('resize', () => {
   updateEditor();
@@ -147,6 +163,7 @@ function setClipboardIcon(state) {
  * - Creation date (left)
  * - Truncated text content (first 5 lines; if more than 5 lines, adds "...")
  * - A "Display" button and a "Delete" button (right) that, when clicked, load or delete the saved text.
+ * The list is generated using a template literal for improved readability.
  */
 async function updateSavedList() {
   try {
