@@ -244,15 +244,3 @@ async function updateSavedList() {
     console.error("Failed to retrieve saved texts:", err);
   }
 }
-
-/**
- * Re-creates the editor with the specified text.
- * @param {string} newText - The text to load into the editor.
- */
-function updateEditorWithText(newText) {
-  const editor = getEditorInstance();
-  if (editor) {
-    editor.destroy();
-  }
-  createEditor(newText);
-}
