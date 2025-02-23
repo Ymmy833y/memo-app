@@ -94,7 +94,7 @@ document.getElementById('close-search-btn').addEventListener('click', () => {
   searchModal.classList.add('hidden');
 });
 
-// Set up search functionality (責務を分離)
+// Set up search functionality 
 setupSearch(textDB);
 
 // Listen for window resize events and update the editor's height accordingly
