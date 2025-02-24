@@ -69,7 +69,7 @@ export async function autoSaveText(textDB, getEditorInstance) {
   try {
     await upsertText(textDB, currentText);
   } catch (err) {
-    console.error("AutoSave failed:", err);
+    console.error('AutoSave failed:', err);
   }
 }
 

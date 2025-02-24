@@ -35,10 +35,10 @@ export class IndexedDB {
   insert(storeName, record) {
     return this.getDB().then(db => {
       return new Promise((resolve, reject) => {
-        const transaction = db.transaction([storeName], "readwrite");
+        const transaction = db.transaction([storeName], 'readwrite');
         const objectStore = transaction.objectStore(storeName);
         const addRequest = objectStore.add(record);
-        addRequest.onsuccess = () => resolve({ message: "success", id: addRequest.result });
+        addRequest.onsuccess = () => resolve({ message: 'success', id: addRequest.result });
         addRequest.onerror = (e) => reject({ message: e.target.error });
       });
     });
@@ -53,10 +53,10 @@ export class IndexedDB {
   update(storeName, record) {
     return this.getDB().then(db => {
       return new Promise((resolve, reject) => {
-        const transaction = db.transaction([storeName], "readwrite");
+        const transaction = db.transaction([storeName], 'readwrite');
         const objectStore = transaction.objectStore(storeName);
         const putRequest = objectStore.put(record);
-        putRequest.onsuccess = () => resolve({ message: "success" });
+        putRequest.onsuccess = () => resolve({ message: 'success' });
         putRequest.onerror = (e) => reject({ message: e.target.error });
       });
     });
@@ -71,10 +71,10 @@ export class IndexedDB {
   deleteById(storeName, id) {
     return this.getDB().then(db => {
       return new Promise((resolve, reject) => {
-        const transaction = db.transaction([storeName], "readwrite");
+        const transaction = db.transaction([storeName], 'readwrite');
         const objectStore = transaction.objectStore(storeName);
         const deleteRequest = objectStore.delete(Number(id));
-        deleteRequest.onsuccess = () => resolve({ message: "success" });
+        deleteRequest.onsuccess = () => resolve({ message: 'success' });
         deleteRequest.onerror = (e) => reject({ message: e.target.error });
       });
     });
