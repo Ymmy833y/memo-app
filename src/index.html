@@ -3,11 +3,17 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Memo App</title>
   <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
   <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/theme/toastui-editor-dark.min.css">
   <link rel="stylesheet" href="./styles/tailwind.css">
   <link rel="stylesheet" href="./styles/base.css">
+  <script>
+    (function() {
+      if (window.innerWidth < 480) document.querySelector("meta[name=viewport]").setAttribute("content", "width=480, user-scalable=no");
+    })();
+  </script>
 </head>
 
 <body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
