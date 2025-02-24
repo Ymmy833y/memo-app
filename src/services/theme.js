@@ -40,9 +40,14 @@ export function toggleStoredTheme() {
  * @param {string} theme - 'dark' or 'light'
  */
 export function applyGlobalTheme(theme) {
+  const toggleThemeBtn = document.getElementById('toggle-theme');
+  const useElem = toggleThemeBtn.querySelector('svg use');
+
   if (theme === 'dark') {
     document.documentElement.classList.add('dark');
+    useElem.setAttribute('xlink:href', '#dark_mode');
   } else {
     document.documentElement.classList.remove('dark');
+    useElem.setAttribute('xlink:href', '#light_mode');
   }
 }
