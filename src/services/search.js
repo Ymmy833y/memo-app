@@ -60,8 +60,8 @@ export function setupSearch(textDB) {
 
   toggleCaseBtn.addEventListener('click', () => {
     caseSensitive = !caseSensitive;
-    toggleCaseBtn.classList.toggle('bg-blue-100', caseSensitive);
-    toggleCaseBtn.classList.toggle('bg-red-100', !caseSensitive);
+    toggleCaseBtn.classList.toggle('bg-blue-300', caseSensitive);
+    toggleCaseBtn.classList.toggle('dark:bg-blue-500', caseSensitive);
     performSearch();
   });
 
