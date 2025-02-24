@@ -1,5 +1,5 @@
 import Editor from '@toast-ui/editor';
-import { getCurrentTheme } from './utils/theme.js';
+import { getCurrentTheme } from './theme.js';
 
 let editorInstance = null;
 
