@@ -14,15 +14,15 @@ export async function upsertText(textDB, text) {
     if (duplicate) {
       duplicate.create_at = new Date().toISOString();
       await textDB.updateText(duplicate);
-      console.log("Upsert: Duplicate record updated.");
-      return { message: "updated", id: duplicate.id };
+      console.log('Upsert: Duplicate record updated.');
+      return { message: 'updated', id: duplicate.id };
     } else {
       const result = await textDB.saveText(text);
-      console.log("Upsert: New record saved.");
-      return { message: "saved", id: result.id };
+      console.log('Upsert: New record saved.');
+      return { message: 'saved', id: result.id };
     }
   } catch (err) {
-    console.error("Upsert failed:", err);
+    console.error('Upsert failed:', err);
     throw err;
   }
 }

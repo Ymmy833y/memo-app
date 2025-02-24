@@ -1,8 +1,8 @@
 import { createEditor, updateEditor, getEditorInstance, updateEditorWithText } from './services/editor.js';
 import { getCurrentTheme, toggleStoredTheme, applyGlobalTheme } from './services/theme.js';
-import { 
-  getAutoSaveSetting, setAutoSaveSetting, updateAutoSaveIcon, 
-  startAutoSave, stopAutoSave, setupAutoSaveOnUnload 
+import {
+  getAutoSaveSetting, setAutoSaveSetting, updateAutoSaveIcon,
+  startAutoSave, stopAutoSave, setupAutoSaveOnUnload
 } from './services/autoSave.js';
 import { upsertText } from './services/save.js';
 import { setupSearch } from './services/search.js';
@@ -13,16 +13,16 @@ let savedTexts = [];
 
 /**
  * Escape strings to display in HTML
- * @param {string} str 
+ * @param {string} str
  * @returns {string}
  */
 function escapeHTML(str) {
   return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 // On initial load, retrieve the theme and apply it globally
@@ -50,7 +50,7 @@ setupAutoSaveOnUnload(textDB, getEditorInstance);
 setupSearch(textDB);
 
 // Save button: Save the editor contents to IndexedDB
-document.getElementById('save-btn').addEventListener('click', async () => {
+document.getElementById('save-btn').addEventListener('click', async() => {
   const editor = getEditorInstance();
   if (!editor) return;
   const text = editor.getMarkdown();
@@ -78,16 +78,16 @@ document.getElementById('auto-save-btn').addEventListener('click', () => {
   updateAutoSaveIcon(newSetting);
   if (newSetting) {
     startAutoSave(textDB, getEditorInstance);
-    console.log("AutoSave turned ON");
+    console.log('AutoSave turned ON');
   } else {
     stopAutoSave();
-    console.log("AutoSave turned OFF");
+    console.log('AutoSave turned OFF');
   }
 });
 
 // Menu button toggles the side menu (from right)
 // Also update the saved texts list when the menu is shown
-document.getElementById('menu-btn').addEventListener('click', async () => {
+document.getElementById('menu-btn').addEventListener('click', async() => {
   const sideMenu = document.getElementById('side-menu');
   sideMenu.classList.toggle('translate-x-full');
   if (!sideMenu.classList.contains('translate-x-full')) {
@@ -128,7 +128,7 @@ document.addEventListener('selectionchange', () => {
 });
 
 // Clipboard copy functionality
-document.getElementById('clipboard-btn').addEventListener('click', async () => {
+document.getElementById('clipboard-btn').addEventListener('click', async() => {
   const editor = getEditorInstance();
   if (!editor) return;
   const text = editor.getMarkdown();
@@ -191,10 +191,10 @@ async function updateSavedList() {
     const sideMenuContent = document.getElementById('side-menu-content');
     sideMenuContent.innerHTML = texts.map(row => {
       const dateStr = new Date(row.create_at).toLocaleString();
-      const lines = row.text.split("\n");
-      let truncatedText = lines.slice(0, 5).join("\n");
+      const lines = row.text.split('\n');
+      let truncatedText = lines.slice(0, 5).join('\n');
       if (lines.length > 5) {
-        truncatedText += "\n...";
+        truncatedText += '\n...';
       }
       return `
         <li data-id="${row.id}" class="bg-gray-50 dark:bg-gray-700 rounded p-3 shadow-sm">
@@ -212,14 +212,14 @@ async function updateSavedList() {
           <div class="text-md whitespace-pre-wrap">${escapeHTML(truncatedText)}</div>
         </li>
       `;
-    }).join("");
+    }).join('');
   } catch (err) {
-    console.error("Failed to retrieve saved texts:", err);
+    console.error('Failed to retrieve saved texts:', err);
   }
 }
 
 const sideMenuContent = document.getElementById('side-menu-content');
-sideMenuContent.addEventListener('click', async (event) => {
+sideMenuContent.addEventListener('click', async(event) => {
   const displayBtn = event.target.closest('.display-btn');
   const deleteBtn = event.target.closest('.delete-btn');
   if (displayBtn) {
@@ -233,9 +233,9 @@ sideMenuContent.addEventListener('click', async (event) => {
         if (currentText.trim().length > 0) {
           try {
             await upsertText(textDB, currentText);
-            console.log("Current text saved before loading new one.");
+            console.log('Current text saved before loading new one.');
           } catch (err) {
-            console.error("Failed to save current text:", err);
+            console.error('Failed to save current text:', err);
           }
         }
       }
@@ -250,10 +250,10 @@ sideMenuContent.addEventListener('click', async (event) => {
     const recordId = li.getAttribute('data-id');
     try {
       await textDB.deleteById(recordId);
-      console.log("Text record deleted successfully.");
+      console.log('Text record deleted successfully.');
       await updateSavedList();
     } catch (err) {
-      console.error("Failed to delete text:", err);
+      console.error('Failed to delete text:', err);
     }
   }
 });

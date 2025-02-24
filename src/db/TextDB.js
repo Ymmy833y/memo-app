@@ -3,8 +3,8 @@ import { Text } from './Text.js';
 
 export class TextDB extends IndexedDB {
   constructor() {
-    super("memoApp", 1);
-    this.STORE_NAME = "text";
+    super('memoApp', 1);
+    this.STORE_NAME = 'text';
   }
 
   /**
@@ -17,18 +17,18 @@ export class TextDB extends IndexedDB {
       // Create object store if it doesn't exist
       if (!db.objectStoreNames.contains(this.STORE_NAME)) {
         const objectStore = db.createObjectStore(this.STORE_NAME, {
-          keyPath: "id",
+          keyPath: 'id',
           autoIncrement: true,
         });
-        objectStore.createIndex("text", "text", { unique: false });
-        objectStore.createIndex("create_at", "create_at", { unique: false });
+        objectStore.createIndex('text', 'text', { unique: false });
+        objectStore.createIndex('create_at', 'create_at', { unique: false });
       }
     };
     request.onsuccess = (event) => {
       this.db = event.target.result;
     };
     request.onerror = (event) => {
-      console.error("IndexedDB error:", event.target.error);
+      console.error('IndexedDB error:', event.target.error);
     };
   }
 
@@ -58,7 +58,7 @@ export class TextDB extends IndexedDB {
   async selectAllTexts() {
     return this.getDB().then(db => {
       return new Promise((resolve, reject) => {
-        const transaction = db.transaction([this.STORE_NAME], "readonly");
+        const transaction = db.transaction([this.STORE_NAME], 'readonly');
         const store = transaction.objectStore(this.STORE_NAME);
         const getAllRequest = store.getAll();
         getAllRequest.onsuccess = (e) => {
@@ -80,9 +80,9 @@ export class TextDB extends IndexedDB {
   async selectByText(searchText, caseSensitive = true) {
     return this.getDB().then(db => {
       return new Promise((resolve, reject) => {
-        const transaction = db.transaction([this.STORE_NAME], "readonly");
+        const transaction = db.transaction([this.STORE_NAME], 'readonly');
         const store = transaction.objectStore(this.STORE_NAME);
-        const index = store.index("text");
+        const index = store.index('text');
         const matchedResults = [];
         const cursorRequest = index.openCursor();
         cursorRequest.onsuccess = (e) => {

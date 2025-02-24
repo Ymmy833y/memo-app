@@ -2,7 +2,6 @@ import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer.js';
 import { getCurrentTheme } from './theme.js';
 import { updateEditorWithText, getEditorInstance } from './editor.js';
 import { upsertText } from './save.js';
-import { TextDB } from '../db/TextDB.js';
 
 /**
  * Extracts a snippet from the given text based on the query.
@@ -20,9 +19,9 @@ export function extractSnippet(text, query, caseSensitive) {
   } else {
     idx = text.toLowerCase().indexOf(query.toLowerCase());
   }
-  if (idx === -1) return "";
+  if (idx === -1) return '';
   const start = Math.max(0, idx - 5);
-  const endIdx = text.indexOf("\n", idx);
+  const endIdx = text.indexOf('\n', idx);
   const end = endIdx === -1 ? text.length : endIdx;
   return text.substring(start, end).trim();
 }
@@ -57,13 +56,13 @@ export function setupSearch(textDB) {
       texts.forEach(record => {
         const snippet = extractSnippet(record.text, query, caseSensitive);
         const item = document.createElement('button');
-        item.classList.add("py-2", "px-2", "text-left", "hover:bg-gray-200", "dark:hover:bg-gray-700", "rounded");
+        item.classList.add('py-2', 'px-2', 'text-left', 'hover:bg-gray-200', 'dark:hover:bg-gray-700', 'rounded');
         item.innerText = snippet;
         item.addEventListener('click', () => showSearchPreview(record));
         resultsContainer.appendChild(item);
       });
     } catch (error) {
-      console.error("Search error:", error);
+      console.error('Search error:', error);
     }
   }
 
@@ -77,16 +76,16 @@ export function setupSearch(textDB) {
       initialValue: record.text,
     });
     const displayBtn = document.getElementById('preview-display-btn');
-    displayBtn.onclick = async () => {
+    displayBtn.onclick = async() => {
       const currentEditor = getEditorInstance();
       if (currentEditor) {
         const currentText = currentEditor.getMarkdown();
         if (currentText.trim().length > 0) {
           try {
             await upsertText(textDB, currentText);
-            console.log("Current text saved before loading search result.");
+            console.log('Current text saved before loading search result.');
           } catch (err) {
-            console.error("Failed to save current text:", err);
+            console.error('Failed to save current text:', err);
           }
         }
       }
