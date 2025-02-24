@@ -13,14 +13,14 @@ export class Text {
    */
   generateRow() {
     if (this.id === undefined) {
-      return { 
-        text: this.text, 
+      return {
+        text: this.text,
         create_at: this.create_at,
       };
     }
-    return { 
-      id: this.id, 
-      text: this.text, 
+    return {
+      id: this.id,
+      text: this.text,
       create_at: this.create_at,
     };
   }

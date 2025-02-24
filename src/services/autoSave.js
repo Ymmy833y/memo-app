@@ -1,3 +1,5 @@
+import { upsertText } from './save.js';
+
 const AUTO_SAVE_KEY = 'autoSaveEnabled';
 const AUTO_SAVE_INTERVAL_KEY = 'autoSaveInterval';
 let autoSaveInterval = null;
@@ -38,8 +40,6 @@ export function setAutoSaveInterval(interval) {
 
 /**
  * Updates the auto-save button icon based on the enabled state.
- * If enabled, the icon's fill color is set to green and the symbol is changed to '#checked';
- * if disabled, the fill color is set to red and the symbol is changed to '#unChecked'.
  * @param {boolean} enabled
  */
 export function updateAutoSaveIcon(enabled) {
@@ -57,32 +57,19 @@ export function updateAutoSaveIcon(enabled) {
 }
 
 /**
- * Performs the auto-save: retrieves the current editor text and,
- * if non-empty, checks for an identical record in IndexedDB.
- * If a duplicate exists, updates its create_at timestamp;
- * otherwise, saves a new record.
+ * Gets the text in the editor and uses upsertText to validate duplicates before saving.
  * @param {object} textDB - The TextDB instance.
  * @param {Function} getEditorInstance - Function to get the current editor instance.
  */
-export async function performAutoSave(textDB, getEditorInstance) {
+export async function autoSaveText(textDB, getEditorInstance) {
   const editor = getEditorInstance();
   if (!editor) return;
   const currentText = editor.getMarkdown();
   if (currentText.trim().length === 0) return;
   try {
-    const allRecords = await textDB.getAllTexts();
-    // Find an existing record with exactly the same text
-    const duplicate = allRecords.find(record => record.text === currentText);
-    if (duplicate) {
-      duplicate.create_at = new Date().toISOString();
-      await textDB.updateText(duplicate);
-      console.log("AutoSave: Duplicate record updated.");
-    } else {
-      await textDB.saveText(currentText);
-      console.log("AutoSave: New record saved.");
-    }
+    await upsertText(textDB, currentText);
   } catch (err) {
-    console.error("AutoSave failed:", err);
+    console.error('AutoSave failed:', err);
   }
 }
 
@@ -95,7 +82,7 @@ export function startAutoSave(textDB, getEditorInstance) {
   if (autoSaveInterval) clearInterval(autoSaveInterval);
   const interval = getAutoSaveInterval();
   autoSaveInterval = setInterval(() => {
-    performAutoSave(textDB, getEditorInstance);
+    autoSaveText(textDB, getEditorInstance);
   }, interval);
 }
 
@@ -117,7 +104,7 @@ export function stopAutoSave() {
 export function setupAutoSaveOnUnload(textDB, getEditorInstance) {
   window.addEventListener('beforeunload', () => {
     if (getAutoSaveSetting()) {
-      performAutoSave(textDB, getEditorInstance);
+      autoSaveText(textDB, getEditorInstance);
     }
   });
 }

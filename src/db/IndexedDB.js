@@ -5,14 +5,25 @@ export class IndexedDB {
   constructor(dbName, version) {
     this.DB_NAME = dbName;
     this.VERSION = version;
+    this.db = null;
   }
 
   /**
-   * Opens a connection to the IndexedDB.
-   * @returns {IDBOpenDBRequest}
+   * Obtain a DB connection asynchronously (reuse cached connection)
+   * @returns {Promise<IDBDatabase>}
    */
-  connect() {
-    return indexedDB.open(this.DB_NAME, this.VERSION);
+  getDB() {
+    if (this.db) {
+      return Promise.resolve(this.db);
+    }
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.DB_NAME, this.VERSION);
+      request.onsuccess = (event) => {
+        this.db = event.target.result;
+        resolve(this.db);
+      };
+      request.onerror = (event) => reject(event.target.error);
+    });
   }
 
   /**
@@ -22,17 +33,14 @@ export class IndexedDB {
    * @returns {Promise} Resolves with the inserted record id if successful.
    */
   insert(storeName, record) {
-    return new Promise((resolve, reject) => {
-      const request = this.connect();
-      request.onsuccess = (event) => {
-        const db = event.target.result;
-        const transaction = db.transaction([storeName], "readwrite");
+    return this.getDB().then(db => {
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], 'readwrite');
         const objectStore = transaction.objectStore(storeName);
         const addRequest = objectStore.add(record);
-        addRequest.onsuccess = () => resolve({ message: "success", id: addRequest.result });
+        addRequest.onsuccess = () => resolve({ message: 'success', id: addRequest.result });
         addRequest.onerror = (e) => reject({ message: e.target.error });
-      };
-      request.onerror = (event) => reject({ message: event.target.error });
+      });
     });
   }
 
@@ -43,17 +51,14 @@ export class IndexedDB {
    * @returns {Promise} Resolves if update is successful.
    */
   update(storeName, record) {
-    return new Promise((resolve, reject) => {
-      const request = this.connect();
-      request.onsuccess = (event) => {
-        const db = event.target.result;
-        const transaction = db.transaction([storeName], "readwrite");
+    return this.getDB().then(db => {
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], 'readwrite');
         const objectStore = transaction.objectStore(storeName);
         const putRequest = objectStore.put(record);
-        putRequest.onsuccess = () => resolve({ message: "success" });
+        putRequest.onsuccess = () => resolve({ message: 'success' });
         putRequest.onerror = (e) => reject({ message: e.target.error });
-      };
-      request.onerror = (event) => reject({ message: event.target.error });
+      });
     });
   }
 
@@ -64,17 +69,14 @@ export class IndexedDB {
    * @returns {Promise} Resolves if deletion is successful.
    */
   deleteById(storeName, id) {
-    return new Promise((resolve, reject) => {
-      const request = this.connect();
-      request.onsuccess = (event) => {
-        const db = event.target.result;
-        const transaction = db.transaction([storeName], "readwrite");
+    return this.getDB().then(db => {
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], 'readwrite');
         const objectStore = transaction.objectStore(storeName);
         const deleteRequest = objectStore.delete(Number(id));
-        deleteRequest.onsuccess = () => resolve({ message: "success" });
+        deleteRequest.onsuccess = () => resolve({ message: 'success' });
         deleteRequest.onerror = (e) => reject({ message: e.target.error });
-      };
-      request.onerror = (event) => reject({ message: event.target.error });
+      });
     });
   }
 }
