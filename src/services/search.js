@@ -1,6 +1,8 @@
 import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer.js';
-import { getCurrentTheme } from './utils/theme.js';
+import { getCurrentTheme } from './theme.js';
 import { updateEditorWithText, getEditorInstance } from './editor.js';
+import { upsertText } from './save.js';
+import { TextDB } from '../db/TextDB.js';
 
 /**
  * Extracts a snippet from the given text based on the query.
@@ -27,7 +29,7 @@ export function extractSnippet(text, query, caseSensitive) {
 
 /**
  * Sets up search functionality in the search modal.
- * @param {object} textDB - The TextDB instance.
+ * @param {TextDB} textDB - The TextDB instance.
  */
 export function setupSearch(textDB) {
   const searchInput = document.getElementById('search-input');
@@ -51,16 +53,8 @@ export function setupSearch(textDB) {
     toggleSearchPreview(false);
     if (!query) return;
     try {
-      const allTexts = await textDB.getAllTexts();
-      const filtered = allTexts.filter(record => {
-        if (caseSensitive) {
-          return record.text.includes(query);
-        } else {
-          return record.text.toLowerCase().includes(query.toLowerCase());
-        }
-      });
-
-      filtered.forEach(record => {
+      const texts = await textDB.selectByText(query, caseSensitive);
+      texts.forEach(record => {
         const snippet = extractSnippet(record.text, query, caseSensitive);
         const item = document.createElement('button');
         item.classList.add("py-2", "px-2", "text-left", "hover:bg-gray-200", "dark:hover:bg-gray-700", "rounded");
@@ -82,16 +76,14 @@ export function setupSearch(textDB) {
       theme: theme,
       initialValue: record.text,
     });
-    // The Display button is already in the HTML (inside search-preview header)
     const displayBtn = document.getElementById('preview-display-btn');
     displayBtn.onclick = async () => {
-      // Save current editor content only if non-empty
       const currentEditor = getEditorInstance();
       if (currentEditor) {
         const currentText = currentEditor.getMarkdown();
         if (currentText.trim().length > 0) {
           try {
-            await textDB.saveText(currentText);
+            await upsertText(textDB, currentText);
             console.log("Current text saved before loading search result.");
           } catch (err) {
             console.error("Failed to save current text:", err);
@@ -99,7 +91,6 @@ export function setupSearch(textDB) {
         }
       }
       updateEditorWithText(record.text);
-      // Close the search modal and side menu
       document.getElementById('search-modal').classList.add('hidden');
       const sideMenu = document.getElementById('side-menu');
       if (!sideMenu.classList.contains('translate-x-full')) {

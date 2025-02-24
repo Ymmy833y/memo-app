@@ -11,7 +11,7 @@ export class TextDB extends IndexedDB {
    * Initializes the database (creates object store and indexes if needed).
    */
   initDB() {
-    const request = this.connect();
+    const request = indexedDB.open(this.DB_NAME, this.VERSION);
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
       // Create object store if it doesn't exist
@@ -23,6 +23,9 @@ export class TextDB extends IndexedDB {
         objectStore.createIndex("text", "text", { unique: false });
         objectStore.createIndex("create_at", "create_at", { unique: false });
       }
+    };
+    request.onsuccess = (event) => {
+      this.db = event.target.result;
     };
     request.onerror = (event) => {
       console.error("IndexedDB error:", event.target.error);
@@ -52,11 +55,9 @@ export class TextDB extends IndexedDB {
    * Retrieves all text records from IndexedDB.
    * @returns {Promise<Array>} Resolves with an array of text records.
    */
-  async getAllTexts() {
-    return new Promise((resolve, reject) => {
-      const request = this.connect();
-      request.onsuccess = (event) => {
-        const db = event.target.result;
+  async selectAllTexts() {
+    return this.getDB().then(db => {
+      return new Promise((resolve, reject) => {
         const transaction = db.transaction([this.STORE_NAME], "readonly");
         const store = transaction.objectStore(this.STORE_NAME);
         const getAllRequest = store.getAll();
@@ -66,10 +67,45 @@ export class TextDB extends IndexedDB {
         getAllRequest.onerror = (e) => {
           reject(e.target.error);
         };
-      };
-      request.onerror = (event) => {
-        reject(event.target.error);
-      };
+      });
+    });
+  }
+
+  /**
+   * Retrieves text records that partially match the given text with optional case sensitivity.
+   * @param {string} searchText - The text to search for.
+   * @param {boolean} [caseSensitive=true] - Whether the search is case sensitive.
+   * @returns {Promise<Array>} Resolves with an array of matching text records.
+   */
+  async selectByText(searchText, caseSensitive = true) {
+    return this.getDB().then(db => {
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction([this.STORE_NAME], "readonly");
+        const store = transaction.objectStore(this.STORE_NAME);
+        const index = store.index("text");
+        const matchedResults = [];
+        const cursorRequest = index.openCursor();
+        cursorRequest.onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (cursor) {
+            let recordText = cursor.value.text;
+            let target = searchText;
+            if (!caseSensitive) {
+              recordText = recordText.toLowerCase();
+              target = target.toLowerCase();
+            }
+            if (recordText.includes(target)) {
+              matchedResults.push(cursor.value);
+            }
+            cursor.continue();
+          } else {
+            resolve(matchedResults);
+          }
+        };
+        cursorRequest.onerror = (e) => {
+          reject(e.target.error);
+        };
+      });
     });
   }
 
