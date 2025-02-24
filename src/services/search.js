@@ -7,10 +7,11 @@ import { upsertText } from './save.js';
  * Extracts a snippet from the given text based on the query.
  * The snippet shows from 5 characters before the first match to the next newline or the end.
  * If the match is at the beginning, returns from the start.
+ * Additionally, highlights the matched portion with a green background.
  * @param {string} text - The full text.
  * @param {string} query - The search query.
  * @param {boolean} caseSensitive - Whether the search is case sensitive.
- * @returns {string} The extracted snippet.
+ * @returns {string} The extracted snippet (with HTML markup if matched).
  */
 export function extractSnippet(text, query, caseSensitive) {
   let idx;
@@ -23,7 +24,27 @@ export function extractSnippet(text, query, caseSensitive) {
   const start = Math.max(0, idx - 5);
   const endIdx = text.indexOf('\n', idx);
   const end = endIdx === -1 ? text.length : endIdx;
-  return text.substring(start, end).trim();
+
+  const snippet = text.substring(start, end);
+
+  let matchPos;
+  if (caseSensitive) {
+    matchPos = snippet.indexOf(query);
+  } else {
+    matchPos = snippet.toLowerCase().indexOf(query.toLowerCase());
+  }
+
+  if (matchPos === -1) {
+    return snippet.trim();
+  }
+
+  const highlighted =
+    snippet.slice(0, matchPos)
+    + '<span class="bg-green-200 dark:bg-green-800">'
+    + snippet.slice(matchPos, matchPos + query.length)
+    + '</span>'
+    + snippet.slice(matchPos + query.length);
+  return highlighted.trim();
 }
 
 /**
@@ -57,7 +78,7 @@ export function setupSearch(textDB) {
         const snippet = extractSnippet(record.text, query, caseSensitive);
         const item = document.createElement('button');
         item.classList.add('py-2', 'px-2', 'text-left', 'hover:bg-gray-200', 'dark:hover:bg-gray-700', 'rounded');
-        item.innerText = snippet;
+        item.innerHTML = snippet;
         item.addEventListener('click', () => showSearchPreview(record));
         resultsContainer.appendChild(item);
       });
