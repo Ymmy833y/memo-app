@@ -142,21 +142,24 @@ document.getElementById('clipboard-btn').addEventListener('click', async() => {
 });
 
 /**
- * Updates the character count display.
- * It shows both the total number of characters (excluding newline and unescaped <br> tags)
+ * Updates the character count display based on the WYSIWYG content (HTML),
+ * ignoring Markdown syntax.
+ * It shows both the total number of characters (rendered text only)
  * and the number of characters in the current selection.
  */
 function updateCount() {
   const editor = getEditorInstance();
   if (!editor) return;
-  const total = editor.getMarkdown()
-    .replace(/\n/g, '')
-    .replace(/(?<!\\)<br>/g, '')
-    .length;
-  const selection = window.getSelection().toString()
-    .replace(/\n/g, '')
-    .replace(/(?<!\\)<br>/g, '')
-    .length;
+  const rawHtml = editor.getHTML();
+
+  const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
+  const totalText = doc.body.textContent || '';
+
+  const total = totalText.replace(/\n/g, '').length;
+
+  const selectionText = window.getSelection().toString() || '';
+  const selection = selectionText.replace(/\n/g, '').length;
+
   const countElem = document.getElementById('count');
   countElem.innerText = `Total Characters: ${total}, Selected Characters: ${selection}`;
 }
