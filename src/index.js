@@ -49,6 +49,19 @@ setupAutoSaveOnUnload(textDB, getEditorInstance);
 // Set up the click event for the save button to save the text to IndexedDB
 setupSearch(textDB);
 
+// Check if the browser supports Service Workers
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register(new URL('./sw.js', import.meta.url))
+      .then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+      })
+      .catch(error => {
+        console.error('Service Worker registration failed:', error);
+      });
+  });
+}
+
 // Save button: Save the editor contents to IndexedDB
 document.getElementById('save-btn').addEventListener('click', async() => {
   const editor = getEditorInstance();
