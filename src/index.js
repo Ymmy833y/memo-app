@@ -115,12 +115,6 @@ document.getElementById('close-search-btn').addEventListener('click', () => {
   searchModal.classList.add('hidden');
 });
 
-// Listen for window resize events and update the editor's height accordingly
-window.addEventListener('resize', () => {
-  updateEditor();
-  updateCount();
-});
-
 // Listen for selection changes to update the character count display and reset clipboard icon
 document.addEventListener('selectionchange', () => {
   updateCount();
