@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - release/2.0.0-alpha3 
 
 jobs:
   build-and-deploy:
