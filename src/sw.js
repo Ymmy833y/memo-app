@@ -47,18 +47,31 @@ self.addEventListener('fetch', event => {
   if (event.request.url.includes('/ws')) {
     return;
   }
-
+  
+  // For navigation requests (i.e. HTML pages), use network-first strategy
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Optionally update the cache with the fresh response
+          const clonedResponse = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, clonedResponse);
+          });
+          return response;
+        })
+        .catch(() => {
+          // If network fails, fall back to the cached index.html
+          return caches.match(new URL('./index.html', self.location).toString());
+        })
+    );
+    return;
+  }
+  
+  // For other requests, use cache-first strategy
   event.respondWith(
     caches.match(event.request.url).then(response => {
-      if (response) {
-        return response;
-      }
-      return fetch(event.request).catch(() => {
-        // For navigation requests, return cached index.html
-        if (event.request.mode === 'navigate') {
-          return caches.match(new URL('./index.html', self.location).toString());
-        }
-        // Otherwise, return a 503 response
+      return response || fetch(event.request).catch(() => {
         return new Response('', {
           status: 503,
           statusText: 'Service Unavailable',
