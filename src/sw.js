@@ -47,7 +47,7 @@ self.addEventListener('fetch', event => {
   if (event.request.url.includes('/ws')) {
     return;
   }
-  
+
   // For navigation requests (i.e. HTML pages), use network-first strategy
   if (event.request.mode === 'navigate') {
     event.respondWith(
@@ -67,7 +67,7 @@ self.addEventListener('fetch', event => {
     );
     return;
   }
-  
+
   // For other requests, use cache-first strategy
   event.respondWith(
     caches.match(event.request.url).then(response => {
