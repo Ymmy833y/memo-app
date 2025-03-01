@@ -1,4 +1,5 @@
-import { upsertText } from './save.js';
+import { textDBInstance } from '../db/TextDB';
+import { getEditorInstance } from './editor';
 
 const AUTO_SAVE_KEY = 'autoSaveEnabled';
 const AUTO_SAVE_INTERVAL_KEY = 'autoSaveInterval';
@@ -27,7 +28,13 @@ export function setAutoSaveSetting(val) {
  */
 export function getAutoSaveInterval() {
   const value = localStorage.getItem(AUTO_SAVE_INTERVAL_KEY);
-  return value ? Number(value) : 180000;
+  const num = Number(value);
+  if (value !== null && !isNaN(num) && num > 0) {
+    return num;
+  } else {
+    setAutoSaveInterval(180000);
+    return 180000;
+  }
 }
 
 /**
@@ -58,16 +65,14 @@ export function updateAutoSaveIcon(enabled) {
 
 /**
  * Gets the text in the editor and uses upsertText to validate duplicates before saving.
- * @param {object} textDB - The TextDB instance.
- * @param {Function} getEditorInstance - Function to get the current editor instance.
  */
-export async function autoSaveText(textDB, getEditorInstance) {
+export async function autoSaveText() {
   const editor = getEditorInstance();
   if (!editor) return;
   const currentText = editor.getMarkdown();
   if (currentText.trim().length === 0) return;
   try {
-    await upsertText(textDB, currentText);
+    await textDBInstance.upsertText(currentText);
   } catch (err) {
     console.error('AutoSave failed:', err);
   }
@@ -75,14 +80,12 @@ export async function autoSaveText(textDB, getEditorInstance) {
 
 /**
  * Starts the auto-save timer using the interval value stored in localStorage.
- * @param {object} textDB - The TextDB instance.
- * @param {Function} getEditorInstance - Function to get the current editor instance.
  */
-export function startAutoSave(textDB, getEditorInstance) {
+export function startAutoSave() {
   if (autoSaveInterval) clearInterval(autoSaveInterval);
   const interval = getAutoSaveInterval();
   autoSaveInterval = setInterval(() => {
-    autoSaveText(textDB, getEditorInstance);
+    autoSaveText();
   }, interval);
 }
 
@@ -97,14 +100,10 @@ export function stopAutoSave() {
 }
 
 /**
- * Sets up auto-save on page unload (best-effort).
- * @param {object} textDB - The TextDB instance.
- * @param {Function} getEditorInstance - Function to get the current editor instance.
+ * Sets up auto-save on page unload
  */
-export function setupAutoSaveOnUnload(textDB, getEditorInstance) {
+export function setupAutoSaveOnUnload() {
   window.addEventListener('beforeunload', () => {
-    if (getAutoSaveSetting()) {
-      autoSaveText(textDB, getEditorInstance);
-    }
+    autoSaveText();
   });
 }

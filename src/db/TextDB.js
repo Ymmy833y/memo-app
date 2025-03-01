@@ -1,10 +1,11 @@
 import { IndexedDB } from './IndexedDB.js';
 import { Text } from './Text.js';
 
-export class TextDB extends IndexedDB {
+class TextDB extends IndexedDB {
   constructor() {
     super('memoApp', 1);
     this.STORE_NAME = 'text';
+    this.initDB();
   }
 
   /**
@@ -108,6 +109,32 @@ export class TextDB extends IndexedDB {
       });
     });
   }
+  /**
+ * An upsert process that verifies all records in IndexedDB, and if there is a record with an exact text match, it updates the timestamp,
+ * and saves it as a new record if there is no match.
+ * @param {string} text - The text to save.
+ * @returns {Promise<object>} - An object containing the results and IDs of the target records.
+ */
+  async upsertText(text) {
+    if (text.trim().length === 0) return;
+    try {
+      const allRecords = await this.selectAllTexts();
+      const duplicate = allRecords.find((record) => record.text === text);
+      if (duplicate) {
+        duplicate.create_at = new Date().toISOString();
+        await this.updateText(duplicate);
+        console.log('Upsert: Duplicate record updated.');
+        return { message: 'updated', id: duplicate.id };
+      } else {
+        const result = await this.saveText(text);
+        console.log('Upsert: New record saved.');
+        return { message: 'saved', id: result.id };
+      }
+    } catch (err) {
+      console.error('Upsert failed:', err);
+      throw err;
+    }
+  }
 
   /**
    * Deletes a text record by its id from IndexedDB.
@@ -118,3 +145,6 @@ export class TextDB extends IndexedDB {
     return super.deleteById(this.STORE_NAME, id);
   }
 }
+
+// Instantiate and export as a singleton
+export const textDBInstance = new TextDB();
