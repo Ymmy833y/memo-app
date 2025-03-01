@@ -6,7 +6,9 @@ const CDN_URLS = [
   'https://uicdn.toast.com/editor/latest/toastui-editor.min.css',
   'https://uicdn.toast.com/editor/latest/theme/toastui-editor-dark.min.css',
   'https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.css',
-  'https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.css'
+  'https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.css',
+  'https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css',
+  'https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight.min.css'
 ];
 
 self.addEventListener('install', event => {

@@ -10,6 +10,7 @@
   "author": "Ymmy833y",
   "dependencies": {
     "@toast-ui/editor": "^3.1.0",
+    "@toast-ui/editor-plugin-code-syntax-highlight": "^3.1.0",
     "@toast-ui/editor-plugin-color-syntax": "^3.1.0",
     "@toast-ui/editor-plugin-uml": "^3.0.1"
   },
