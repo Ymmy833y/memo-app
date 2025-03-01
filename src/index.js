@@ -6,6 +6,7 @@ import {
 } from './services/autoSave.js';
 import { upsertText } from './services/save.js';
 import { setupSearch } from './services/search.js';
+import { initShortcuts } from './services/shortcut.js';
 import { TextDB } from './db/TextDB.js';
 
 // Keep a list of saved records to display in the side menu
@@ -32,6 +33,7 @@ applyGlobalTheme(initialTheme);
 // Initialize the editor with the current theme and dynamic height
 createEditor();
 updateCount();
+initShortcuts();
 
 // Initialize the TextDB (IndexedDB) instance and ensure DB setup
 const textDB = new TextDB();
