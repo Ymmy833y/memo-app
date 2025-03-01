@@ -66,7 +66,7 @@ document.getElementById('save-btn').addEventListener('click', async() => {
   if (!editor) return;
   const text = editor.getMarkdown();
   try {
-    await textDBInstance.updateText(text);
+    await textDBInstance.upsertText(text);
     console.log('Text saved successfully to IndexedDB.');
   } catch (error) {
     console.error('Failed to save text:', error);
@@ -207,6 +207,8 @@ async function updateSavedList() {
       let truncatedText = lines.slice(0, 5).join('\n');
       if (lines.length > 5) {
         truncatedText += '\n...';
+      } else if (truncatedText.length > 100) {
+        truncatedText = truncatedText.substring(0, 100) + '...';
       }
       return `
         <li data-id="${row.id}" class="bg-gray-50 dark:bg-gray-700 rounded p-3 shadow-sm">
@@ -221,7 +223,7 @@ async function updateSavedList() {
               </button>
             </div>
           </div>
-          <div class="text-md whitespace-pre-wrap">${escapeHTML(truncatedText)}</div>
+          <div class="text-md whitespace-pre-wrap truncate">${escapeHTML(truncatedText)}</div>
         </li>
       `;
     }).join('');
