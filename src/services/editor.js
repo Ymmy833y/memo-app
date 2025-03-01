@@ -1,5 +1,6 @@
 import Editor from '@toast-ui/editor';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
+import uml from '@toast-ui/editor-plugin-uml';
 import { getCurrentTheme } from './theme.js';
 
 let editorInstance = null;
@@ -27,7 +28,7 @@ export function createEditor(initialValue = '') {
     previewStyle: 'vertical',
     theme: currentTheme,
     initialValue,
-    plugins: [colorSyntax],
+    plugins: [colorSyntax, uml],
   });
   return editorInstance;
 }
