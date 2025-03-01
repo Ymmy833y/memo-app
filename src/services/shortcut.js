@@ -84,49 +84,49 @@ function isMatchingEvent(event, shortcutStr) {
 const commandMapping = {
   header1: () => {
     const editor = getEditorInstance();
-    if (editor) {      
+    if (editor) {
       editor.exec('heading', { level: 1 });
     }
   },
   header2: () => {
     const editor = getEditorInstance();
-    if (editor) {      
+    if (editor) {
       editor.exec('heading', { level: 2 });
     }
   },
   header3: () => {
     const editor = getEditorInstance();
-    if (editor) {      
+    if (editor) {
       editor.exec('heading', { level: 3 });
     }
   },
   header4: () => {
     const editor = getEditorInstance();
-    if (editor) {      
+    if (editor) {
       editor.exec('heading', { level: 4 });
     }
   },
   header5: () => {
     const editor = getEditorInstance();
-    if (editor) {      
+    if (editor) {
       editor.exec('heading', { level: 5 });
     }
   },
   header6: () => {
     const editor = getEditorInstance();
-    if (editor) {      
+    if (editor) {
       editor.exec('heading', { level: 6 });
     }
   },
   paragraph: () => {
     const editor = getEditorInstance();
-    if (editor) {      
+    if (editor) {
       editor.exec('heading', { level: 0 });
     }
   },
   bold: () => {
     const editor = getEditorInstance();
-    if (editor) {      
+    if (editor) {
       editor.exec('bold');
     }
   },
