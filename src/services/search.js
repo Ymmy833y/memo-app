@@ -1,4 +1,6 @@
 import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer.js';
+import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js';
+import uml from '@toast-ui/editor-plugin-uml';
 import { getCurrentTheme } from './theme.js';
 import { updateEditorWithText, getEditorInstance } from './editor.js';
 import { textDBInstance } from '../db/TextDB.js';
@@ -94,7 +96,10 @@ export function setupSearch() {
       el: preview,
       theme: theme,
       initialValue: record.text,
+      plugins: [codeSyntaxHighlight, uml],
     });
+    const previewCreateAt = document.getElementById('preview-create-at');
+    previewCreateAt.innerText = new Date(record.create_at).toLocaleString();;
     const displayBtn = document.getElementById('preview-display-btn');
     displayBtn.onclick = async() => {
       const currentEditor = getEditorInstance();
