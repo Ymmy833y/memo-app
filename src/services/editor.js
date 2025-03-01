@@ -6,11 +6,11 @@ import { getCurrentTheme } from './theme.js';
 let editorInstance = null;
 
 /**
- * Computes the editor height as 80% of the viewport height.
+ * Computes the editor height as 75% of the viewport height.
  * @returns {string} The height in pixels.
  */
 function getEditorHeight() {
-  return `${window.innerHeight * 0.8}px`;
+  return `${window.innerHeight * 0.75}px`;
 }
 
 /**
@@ -73,3 +73,8 @@ export function updateEditorWithText(newText) {
 export function getEditorInstance() {
   return editorInstance;
 }
+
+// Listen for window resize events and update the editor's height accordingly
+window.addEventListener('resize', () => {
+  document.querySelector('#editor').style.height = getEditorHeight();
+});

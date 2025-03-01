@@ -14,12 +14,12 @@
   <link rel="manifest" href="./manifest.json">
   <script>
     (function() {
-      if (window.innerWidth < 500) document.querySelector("meta[name=viewport]").setAttribute("content", "width=500, user-scalable=no");
+      if (window.innerWidth < 510) document.querySelector("meta[name=viewport]").setAttribute("content", "width=510, user-scalable=no");
     })();
   </script>
 </head>
 
-<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+<body class="min-h-screen flex flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
   <svg xmlns="http://www.w3.org/2000/svg" class="hidden">
     <symbol id="clipboard_default" viewBox="0 0 16 16">
       <path
@@ -83,32 +83,34 @@
     </symbol>
   </svg>
 
-  <header class="max-w-7xl mx-auto px-4 py-1">
-    <div class="flex flex-wrap justify-between items-center pt-3">
-      <div class="flex items-center">
-        <a href="https://ymmy833y.github.io/memo-app/" class="dark:text-gray-200 no-underline">
-          <span class="text-3xl font-serif">Memo App</span>
-        </a>
-      </div>
-      <div class="flex space-x-2">
-        <button id="clipboard-btn"
-          class="w-10 h-10 flex items-center justify-center border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white">
-          <svg width="20" height="20" fill="currentColor">
-            <use xlink:href="#clipboard_default"></use>
-          </svg>
-        </button>
-        <button id="save-btn"
-          class="w-10 h-10 flex items-center justify-center border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white">
-          <svg width="20" height="20" fill="currentColor">
-            <use xlink:href="#save"></use>
-          </svg>
-        </button>
-        <button id="menu-btn"
-          class="w-10 h-10 flex items-center justify-center border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white">
-          <svg width="20" height="20" fill="currentColor">
-            <use xlink:href="#menu"></use>
-          </svg>
-        </button>
+  <header class="max-w-7xl">
+    <div class="mx-auto px-4 py-1">
+      <div class="flex flex-wrap justify-between items-center pt-3">
+        <div class="flex items-center">
+          <a href="https://ymmy833y.github.io/memo-app/" class="dark:text-gray-200 no-underline">
+            <span class="text-3xl font-serif">Memo App</span>
+          </a>
+        </div>
+        <div class="flex space-x-2">
+          <button id="clipboard-btn"
+            class="w-10 h-10 flex items-center justify-center border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white">
+            <svg width="20" height="20" fill="currentColor">
+              <use xlink:href="#clipboard_default"></use>
+            </svg>
+          </button>
+          <button id="save-btn"
+            class="w-10 h-10 flex items-center justify-center border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white">
+            <svg width="20" height="20" fill="currentColor">
+              <use xlink:href="#save"></use>
+            </svg>
+          </button>
+          <button id="menu-btn"
+            class="w-10 h-10 flex items-center justify-center border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white">
+            <svg width="20" height="20" fill="currentColor">
+              <use xlink:href="#menu"></use>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -117,7 +119,7 @@
   <div id="side-menu"
     class="fixed top-0 right-0 h-full w-full md:w-[75%] bg-white dark:bg-gray-800 shadow-md transform translate-x-full transition-transform duration-300 z-50">
     <div class="p-4 flex flex-col h-full">
-      <div class="flex justify-end space-x-4">
+      <div class="flex justify-end space-x-2">
         <button id="search-btn"
           class="w-10 h-10 flex items-center justify-center border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white">
           <svg width="20" height="20" fill="currentColor">
@@ -138,7 +140,7 @@
             <use xlink:href="#unChecked"></use>
           </svg>
         </button>
-        <button id="close-menu-btn" class="text-gray-700 dark:text-gray-200">
+        <button id="close-menu-btn" class="text-gray-700 dark:text-gray-200 pl-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <use xlink:href="#close"></use>
           </svg>
@@ -154,9 +156,11 @@
 
   <hr class="border-gray-700 my-2">
 
-  <main class="max-w-7xl mx-auto px-4">
-    <div id="editor"></div>
-    <div id="count" class="pt-5 text-sm"></div>
+  <main class="max-w-7xl flex-grow">
+    <div class="mx-auto px-4">
+      <div id="editor"></div>
+      <div id="count" class="pt-5 text-sm"></div>  
+    </div>
   </main>
 
   <!-- Search modal -->
@@ -202,8 +206,8 @@
     </div>
   </div>
 
-  <footer class="mt-2 py-4 bg-gray-100 dark:bg-gray-800">
-    <div class="max-w-7xl mx-auto px-4">
+  <footer class="max-w-7xl mt-auto pt-2">
+    <div class="py-4 bg-gray-100 dark:bg-gray-800">
       <p class="text-center text-sm text-gray-700 dark:text-gray-300">&copy; 2025 Memo App. All rights reserved.</p>
       <div class="mt-2 flex justify-center space-x-4">
         <a href="https://github.com/Ymmy833y/memo-app" target="_blank" rel="noopener noreferrer" class="flex items-center text-xs text-blue-500 hover:underline">
