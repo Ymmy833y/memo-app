@@ -1,4 +1,5 @@
 import { getEditorInstance } from './editor.js';
+import { autoSaveText } from './autoSave.js';
 
 const defaultShortcuts = {
   header1: 'Ctrl+Alt+1',
@@ -18,6 +19,8 @@ const defaultShortcuts = {
   inlineCode: 'Ctrl+Shift+C',
   codeBlock: 'Ctrl+Shift+Alt+C',
   horizontalRule: 'Ctrl+L',
+  saveText: 'Ctrl+Shift+S',
+  showSearchModal: 'Ctrl+Shift+F',
 };
 
 const localStorageKey = 'shortcuts';
@@ -182,6 +185,18 @@ const commandMapping = {
     const editor = getEditorInstance();
     if (editor) {
       editor.exec('hr');
+    }
+  },
+
+  saveText: () => {
+    autoSaveText();
+  },
+  showSearchModal: () => {
+    const searchModal = document.getElementById('search-modal');
+    searchModal.classList.remove('hidden');
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+      searchInput.focus();
     }
   },
 };
