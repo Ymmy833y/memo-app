@@ -132,14 +132,21 @@
             <use xlink:href="#dark_mode"></use>
           </svg>
         </button>
-        <!-- Auto-save button with text and icon -->
-        <button id="auto-save-btn"
-          class="flex items-center space-x-2 px-3 py-2 border border-blue-500 rounded hover:bg-blue-500 hover:text-white">
-          <span class="text-sm">Auto Save</span>
-          <svg width="20" height="20" fill="currentColor">
-            <use xlink:href="#unChecked"></use>
-          </svg>
-        </button>
+        <div class="inline-flex">
+          <button id="auto-save-btn" class="flex items-center space-x-2 px-3 py-2 border border-blue-500 rounded hover:bg-blue-500 hover:text-white">
+            <span class="text-sm">Auto Save</span>
+            <svg width="20" height="20" fill="currentColor">
+              <use xlink:href="#unChecked"></use>
+            </svg>
+          </button>
+          <select id="auto-save-interval" class="-ml-px p-2 border border-blue-500 rounded-r focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-blue-500 dark:focus:ring-blue-500">
+            <option value="10">10s</option>
+            <option value="30">30s</option>
+            <option value="60">1m</option>
+            <option value="180">3m</option>
+            <option value="300">5m</option>
+          </select>
+        </div>
         <button id="close-menu-btn" class="text-gray-700 dark:text-gray-200 pl-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <use xlink:href="#close"></use>

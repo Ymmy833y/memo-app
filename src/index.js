@@ -1,10 +1,6 @@
 import { createEditor, updateEditor, getEditorInstance, updateEditorWithText } from './services/editor.js';
 import { getCurrentTheme, toggleStoredTheme, applyGlobalTheme } from './services/theme.js';
-import {
-  getAutoSaveSetting, setAutoSaveSetting, updateAutoSaveIcon,
-  startAutoSave, stopAutoSave, setupAutoSaveOnUnload,
-  autoSaveText
-} from './services/autoSave.js';
+import { setupAutoSaveUI, autoSaveText } from './services/autoSave.js';
 import { setupSearch } from './services/search.js';
 import { initShortcuts } from './services/shortcut.js';
 import { textDBInstance } from './db/TextDB.js';
@@ -36,13 +32,7 @@ updateCount();
 initShortcuts();
 
 // Auto-save setup: start or stop based on stored setting
-if (getAutoSaveSetting()) {
-  startAutoSave();
-} else {
-  stopAutoSave();
-}
-updateAutoSaveIcon(getAutoSaveSetting());
-setupAutoSaveOnUnload();
+setupAutoSaveUI();
 
 // Set up the click event for the save button to save the text to IndexedDB
 setupSearch();
@@ -79,21 +69,6 @@ document.getElementById('toggle-theme').addEventListener('click', () => {
   applyGlobalTheme(newTheme);
   updateEditor();
   console.log(`Theme switched to: ${newTheme}`);
-});
-
-// Auto-save button: toggles auto-save ON/OFF
-document.getElementById('auto-save-btn').addEventListener('click', () => {
-  const current = getAutoSaveSetting();
-  const newSetting = !current;
-  setAutoSaveSetting(newSetting);
-  updateAutoSaveIcon(newSetting);
-  if (newSetting) {
-    startAutoSave();
-    console.log('AutoSave turned ON');
-  } else {
-    stopAutoSave();
-    console.log('AutoSave turned OFF');
-  }
 });
 
 // Menu button toggles the side menu (from right)
