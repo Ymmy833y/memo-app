@@ -1,0 +1,6 @@
+{
+  "name": "Memo App",
+  "short_name": "Memo",
+  "start_url": "./index.html",
+  "display": "standalone"
+}

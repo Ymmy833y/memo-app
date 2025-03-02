@@ -1,12 +1,9 @@
 import { createEditor, updateEditor, getEditorInstance, updateEditorWithText } from './services/editor.js';
 import { getCurrentTheme, toggleStoredTheme, applyGlobalTheme } from './services/theme.js';
-import {
-  getAutoSaveSetting, setAutoSaveSetting, updateAutoSaveIcon,
-  startAutoSave, stopAutoSave, setupAutoSaveOnUnload
-} from './services/autoSave.js';
-import { upsertText } from './services/save.js';
+import { setupAutoSaveUI, autoSaveText } from './services/autoSave.js';
 import { setupSearch } from './services/search.js';
-import { TextDB } from './db/TextDB.js';
+import { initShortcuts } from './services/shortcut.js';
+import { textDBInstance } from './db/TextDB.js';
 
 // Keep a list of saved records to display in the side menu
 let savedTexts = [];
@@ -32,22 +29,26 @@ applyGlobalTheme(initialTheme);
 // Initialize the editor with the current theme and dynamic height
 createEditor();
 updateCount();
-
-// Initialize the TextDB (IndexedDB) instance and ensure DB setup
-const textDB = new TextDB();
-textDB.initDB();
+initShortcuts();
 
 // Auto-save setup: start or stop based on stored setting
-if (getAutoSaveSetting()) {
-  startAutoSave(textDB, getEditorInstance);
-} else {
-  stopAutoSave();
-}
-updateAutoSaveIcon(getAutoSaveSetting());
-setupAutoSaveOnUnload(textDB, getEditorInstance);
+setupAutoSaveUI();
 
 // Set up the click event for the save button to save the text to IndexedDB
-setupSearch(textDB);
+setupSearch();
+
+// Check if the browser supports Service Workers
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register(new URL('./sw.js', import.meta.url))
+      .then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+      })
+      .catch(error => {
+        console.error('Service Worker registration failed:', error);
+      });
+  });
+}
 
 // Save button: Save the editor contents to IndexedDB
 document.getElementById('save-btn').addEventListener('click', async() => {
@@ -55,7 +56,7 @@ document.getElementById('save-btn').addEventListener('click', async() => {
   if (!editor) return;
   const text = editor.getMarkdown();
   try {
-    await upsertText(textDB, text);
+    await textDBInstance.upsertText(text);
     console.log('Text saved successfully to IndexedDB.');
   } catch (error) {
     console.error('Failed to save text:', error);
@@ -68,21 +69,6 @@ document.getElementById('toggle-theme').addEventListener('click', () => {
   applyGlobalTheme(newTheme);
   updateEditor();
   console.log(`Theme switched to: ${newTheme}`);
-});
-
-// Auto-save button: toggles auto-save ON/OFF
-document.getElementById('auto-save-btn').addEventListener('click', () => {
-  const current = getAutoSaveSetting();
-  const newSetting = !current;
-  setAutoSaveSetting(newSetting);
-  updateAutoSaveIcon(newSetting);
-  if (newSetting) {
-    startAutoSave(textDB, getEditorInstance);
-    console.log('AutoSave turned ON');
-  } else {
-    stopAutoSave();
-    console.log('AutoSave turned OFF');
-  }
 });
 
 // Menu button toggles the side menu (from right)
@@ -107,18 +93,16 @@ document.getElementById('close-menu-btn').addEventListener('click', () => {
 document.getElementById('search-btn').addEventListener('click', () => {
   const searchModal = document.getElementById('search-modal');
   searchModal.classList.remove('hidden');
+  const searchInput = document.getElementById('search-input');
+  if (searchInput) {
+    searchInput.focus();
+  }
 });
 
 // Close search modal
 document.getElementById('close-search-btn').addEventListener('click', () => {
   const searchModal = document.getElementById('search-modal');
   searchModal.classList.add('hidden');
-});
-
-// Listen for window resize events and update the editor's height accordingly
-window.addEventListener('resize', () => {
-  updateEditor();
-  updateCount();
 });
 
 // Listen for selection changes to update the character count display and reset clipboard icon
@@ -188,7 +172,7 @@ function setClipboardIcon(state) {
  */
 async function updateSavedList() {
   try {
-    let texts = await textDB.selectAllTexts();
+    let texts = await textDBInstance.selectAllTexts();
     texts.sort((a, b) => new Date(b.create_at) - new Date(a.create_at));
     savedTexts = texts;
     const sideMenuContent = document.getElementById('side-menu-content');
@@ -198,6 +182,8 @@ async function updateSavedList() {
       let truncatedText = lines.slice(0, 5).join('\n');
       if (lines.length > 5) {
         truncatedText += '\n...';
+      } else if (truncatedText.length > 100) {
+        truncatedText = truncatedText.substring(0, 100) + '...';
       }
       return `
         <li data-id="${row.id}" class="bg-gray-50 dark:bg-gray-700 rounded p-3 shadow-sm">
@@ -212,7 +198,7 @@ async function updateSavedList() {
               </button>
             </div>
           </div>
-          <div class="text-md whitespace-pre-wrap">${escapeHTML(truncatedText)}</div>
+          <div class="text-md whitespace-pre-wrap truncate">${escapeHTML(truncatedText)}</div>
         </li>
       `;
     }).join('');
@@ -230,18 +216,7 @@ sideMenuContent.addEventListener('click', async(event) => {
     const recordId = li.getAttribute('data-id');
     const record = savedTexts.find(r => r.id == recordId);
     if (record) {
-      const currentEditor = getEditorInstance();
-      if (currentEditor) {
-        const currentText = currentEditor.getMarkdown();
-        if (currentText.trim().length > 0) {
-          try {
-            await upsertText(textDB, currentText);
-            console.log('Current text saved before loading new one.');
-          } catch (err) {
-            console.error('Failed to save current text:', err);
-          }
-        }
-      }
+      await autoSaveText();
       updateEditorWithText(record.text);
       const sideMenu = document.getElementById('side-menu');
       if (!sideMenu.classList.contains('translate-x-full')) {
@@ -252,7 +227,7 @@ sideMenuContent.addEventListener('click', async(event) => {
     const li = deleteBtn.closest('li');
     const recordId = li.getAttribute('data-id');
     try {
-      await textDB.deleteById(recordId);
+      await textDBInstance.deleteById(recordId);
       console.log('Text record deleted successfully.');
       await updateSavedList();
     } catch (err) {

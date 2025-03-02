@@ -3,14 +3,25 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Memo App</title>
   <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
   <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/theme/toastui-editor-dark.min.css">
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.css">
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight.min.css">
   <link rel="stylesheet" href="./styles/tailwind.css">
   <link rel="stylesheet" href="./styles/base.css">
+  <link rel="manifest" href="./manifest.json">
+  <script>
+    (function() {
+      if (window.innerWidth < 510) document.querySelector("meta[name=viewport]").setAttribute("content", "width=510, user-scalable=no");
+    })();
+  </script>
 </head>
 
-<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+<body class="min-h-screen flex flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
   <svg xmlns="http://www.w3.org/2000/svg" class="hidden">
     <symbol id="clipboard_default" viewBox="0 0 16 16">
       <path
@@ -69,12 +80,15 @@
         d="m2.244 13.081.943-2.803H6.66l.944 2.803H8.86L5.54 3.75H4.322L1 13.081h1.244zm2.7-7.923L6.34 9.314H3.51l1.4-4.156h.034zm9.146 7.027h.035v.896h1.128V8.125c0-1.51-1.114-2.345-2.646-2.345-1.736 0-2.59.916-2.666 2.174h1.108c.068-.718.595-1.19 1.517-1.19.971 0 1.518.52 1.518 1.464v.731H12.19c-1.647.007-2.522.8-2.522 2.058 0 1.319.957 2.18 2.345 2.18 1.06 0 1.716-.43 2.078-1.011zm-1.763.035c-.752 0-1.456-.397-1.456-1.244 0-.65.424-1.115 1.408-1.115h1.805v.834c0 .896-.752 1.525-1.757 1.525z">
       </path>
     </symbol>
+    <symbol id="github" viewBox="0 0 16 16">
+      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+    </symbol>
   </svg>
 
-  <header class="max-w-7xl mx-auto px-4 py-1">
+  <header class="max-w-7xl w-full mx-auto px-4 py-1">
     <div class="flex flex-wrap justify-between items-center pt-3">
       <div class="flex items-center">
-        <a href="/" class="dark:text-gray-200 no-underline">
+        <a href="https://ymmy833y.github.io/memo-app/" class="dark:text-gray-200 no-underline">
           <span class="text-3xl font-serif">Memo App</span>
         </a>
       </div>
@@ -105,7 +119,7 @@
   <div id="side-menu"
     class="fixed top-0 right-0 h-full w-full md:w-[75%] bg-white dark:bg-gray-800 shadow-md transform translate-x-full transition-transform duration-300 z-50">
     <div class="p-4 flex flex-col h-full">
-      <div class="flex justify-end space-x-4">
+      <div class="flex justify-end space-x-2">
         <button id="search-btn"
           class="w-10 h-10 flex items-center justify-center border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white">
           <svg width="20" height="20" fill="currentColor">
@@ -118,15 +132,22 @@
             <use xlink:href="#dark_mode"></use>
           </svg>
         </button>
-        <!-- Auto-save button with text and icon -->
-        <button id="auto-save-btn"
-          class="flex items-center space-x-2 px-3 py-2 border border-blue-500 rounded hover:bg-blue-500 hover:text-white">
-          <span class="text-sm">Auto Save</span>
-          <svg width="20" height="20" fill="currentColor">
-            <use xlink:href="#unChecked"></use>
-          </svg>
-        </button>
-        <button id="close-menu-btn" class="text-gray-700 dark:text-gray-200">
+        <div class="inline-flex">
+          <button id="auto-save-btn" class="flex items-center space-x-2 px-3 py-2 border border-blue-500 rounded hover:bg-blue-500 hover:text-white">
+            <span class="text-sm">Auto Save</span>
+            <svg width="20" height="20" fill="currentColor">
+              <use xlink:href="#unChecked"></use>
+            </svg>
+          </button>
+          <select id="auto-save-interval" class="-ml-px p-2 border border-blue-500 rounded-r focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-blue-500 dark:focus:ring-blue-500">
+            <option value="10">10s</option>
+            <option value="30">30s</option>
+            <option value="60">1m</option>
+            <option value="180">3m</option>
+            <option value="300">5m</option>
+          </select>
+        </div>
+        <button id="close-menu-btn" class="text-gray-700 dark:text-gray-200 pl-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <use xlink:href="#close"></use>
           </svg>
@@ -142,9 +163,9 @@
 
   <hr class="border-gray-700 my-2">
 
-  <main class="max-w-7xl mx-auto px-4">
+  <main class="max-w-7xl flex-grow w-full mx-auto px-4">
     <div id="editor"></div>
-    <div id="count" class="pt-5 text-sm"></div>
+    <div id="count" class="pt-5 text-sm"></div>  
   </main>
 
   <!-- Search modal -->
@@ -184,11 +205,26 @@
               Display
             </button>
           </div>
+          <span class="text-sm text-gray-500 dark:text-gray-300" id="preview-create-at"></span>
           <div id="preview"></div>
         </div>
       </div>
     </div>
   </div>
+
+  <footer class="mt-auto w-full mx-auto pt-2">
+    <div class="py-4 bg-gray-100 dark:bg-gray-800">
+      <p class="text-center text-sm text-gray-700 dark:text-gray-300">&copy; 2025 Memo App. All rights reserved.</p>
+      <div class="mt-2 flex justify-center space-x-4">
+        <a href="https://github.com/Ymmy833y/memo-app" target="_blank" rel="noopener noreferrer" class="flex items-center text-xs text-blue-500 hover:underline">
+          <svg class="w-4 h-4 mr-1" fill="currentColor">
+            <use xlink:href="#github"></use>
+          </svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
 
   <script type="module" src="./index.js"></script>
 </body>

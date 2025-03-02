@@ -1,14 +1,17 @@
 import Editor from '@toast-ui/editor';
+import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
+import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js';
+import uml from '@toast-ui/editor-plugin-uml';
 import { getCurrentTheme } from './theme.js';
 
 let editorInstance = null;
 
 /**
- * Computes the editor height as 80% of the viewport height.
+ * Computes the editor height as 75% of the viewport height.
  * @returns {string} The height in pixels.
  */
 function getEditorHeight() {
-  return `${window.innerHeight * 0.8}px`;
+  return `${window.innerHeight * 0.75}px`;
 }
 
 /**
@@ -26,6 +29,7 @@ export function createEditor(initialValue = '') {
     previewStyle: 'vertical',
     theme: currentTheme,
     initialValue,
+    plugins: [colorSyntax, codeSyntaxHighlight, uml],
   });
   return editorInstance;
 }
@@ -47,6 +51,7 @@ export function updateEditor() {
     previewStyle: 'vertical',
     theme: currentTheme,
     initialValue: content,
+    plugins: [colorSyntax, codeSyntaxHighlight, uml],
   });
 }
 
@@ -69,3 +74,8 @@ export function updateEditorWithText(newText) {
 export function getEditorInstance() {
   return editorInstance;
 }
+
+// Listen for window resize events and update the editor's height accordingly
+window.addEventListener('resize', () => {
+  document.querySelector('#editor').style.height = getEditorHeight();
+});

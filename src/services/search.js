@@ -1,7 +1,9 @@
 import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer.js';
+import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight-all.js';
+import uml from '@toast-ui/editor-plugin-uml';
 import { getCurrentTheme } from './theme.js';
 import { updateEditorWithText, getEditorInstance } from './editor.js';
-import { upsertText } from './save.js';
+import { textDBInstance } from '../db/TextDB.js';
 
 /**
  * Extracts a snippet from the given text based on the query.
@@ -49,9 +51,8 @@ export function extractSnippet(text, query, caseSensitive) {
 
 /**
  * Sets up search functionality in the search modal.
- * @param {TextDB} textDB - The TextDB instance.
  */
-export function setupSearch(textDB) {
+export function setupSearch() {
   const searchInput = document.getElementById('search-input');
   const toggleCaseBtn = document.getElementById('toggle-case-btn');
   const resultsContainer = document.getElementById('search-results');
@@ -73,7 +74,7 @@ export function setupSearch(textDB) {
     toggleSearchPreview(false);
     if (!query) return;
     try {
-      const texts = await textDB.selectByText(query, caseSensitive);
+      const texts = await textDBInstance.selectByText(query, caseSensitive);
       texts.forEach(record => {
         const snippet = extractSnippet(record.text, query, caseSensitive);
         const item = document.createElement('button');
@@ -95,7 +96,10 @@ export function setupSearch(textDB) {
       el: preview,
       theme: theme,
       initialValue: record.text,
+      plugins: [codeSyntaxHighlight, uml],
     });
+    const previewCreateAt = document.getElementById('preview-create-at');
+    previewCreateAt.innerText = new Date(record.create_at).toLocaleString();;
     const displayBtn = document.getElementById('preview-display-btn');
     displayBtn.onclick = async() => {
       const currentEditor = getEditorInstance();
@@ -103,7 +107,7 @@ export function setupSearch(textDB) {
         const currentText = currentEditor.getMarkdown();
         if (currentText.trim().length > 0) {
           try {
-            await upsertText(textDB, currentText);
+            await textDBInstance.upsertText(currentText);
             console.log('Current text saved before loading search result.');
           } catch (err) {
             console.error('Failed to save current text:', err);
