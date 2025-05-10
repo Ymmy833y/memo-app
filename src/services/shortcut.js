@@ -1,5 +1,5 @@
 import { copyMarkdownText } from '../index.js';
-import { getEditorInstance } from './editor.js';
+import { getEditorInstance, clearEditorStyles } from './editor.js';
 import { autoSaveText } from './autoSave.js';
 
 const defaultShortcuts = {
@@ -23,6 +23,7 @@ const defaultShortcuts = {
   saveText: 'Ctrl+Shift+S',
   showSearchModal: 'Ctrl+Shift+F',
   copy: 'Ctrl+Alt+C',
+  clearStyle: 'Ctrl+Alt+X',
 };
 
 const localStorageKey = 'shortcuts';
@@ -188,6 +189,9 @@ const commandMapping = {
     if (editor) {
       editor.exec('hr');
     }
+  },
+  clearStyle: () => {
+    clearEditorStyles();
   },
 
   saveText: () => {

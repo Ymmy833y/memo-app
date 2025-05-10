@@ -75,6 +75,16 @@ export function getEditorInstance() {
   return editorInstance;
 }
 
+/**
+ * Ability to remove styles
+ **/
+export function clearEditorStyles() {
+  if (!editorInstance) return;
+  const html = editorInstance.getHTML();
+  const cleaned = html.replace(/<[^>]*>/g, ''); // Remove all HTML tags
+  editorInstance.setHTML(cleaned);
+}
+
 // Listen for window resize events and update the editor's height accordingly
 window.addEventListener('resize', () => {
   document.querySelector('#editor').style.height = getEditorHeight();
