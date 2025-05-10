@@ -28,24 +28,26 @@ MemoApp is a lightweight note-taking application that allows you to create and m
 
 ## Shortcut Keys
 
-| Command | Default Shortcut | Description |
-| ------- | ---------------- | ----------- |
-| header1 | Ctrl+Alt+1 | Apply Heading Level 1 |
-| header2 | Ctrl+Alt+2 | Apply Heading Level 2 |
-| header3 | Ctrl+Alt+3 | Apply Heading Level 3 |
-| header4 | Ctrl+Alt+4 | Apply Heading Level 4 |
-| header5 | Ctrl+Alt+5 | Apply Heading Level 5 |
-| header6 | Ctrl+Alt+6 | Apply Heading Level 6 |
-| paragraph | Ctrl+Alt+0 | Set text as paragraph (remove heading) |
-| bold | Ctrl+B | Toggle bold formatting |
-| italic | Ctrl+I | Toggle italic formatting |
-| strike | Ctrl+S | Toggle strikethrough formatting |
-| quote | Ctrl+Shift+Q | Toggle blockquote formatting |
-| bulletList | Ctrl+U | Toggle unordered (bullet) list formatting |
-| orderedList | Ctrl+O | Toggle ordered list formatting |
-| taskList | Ctrl+Shift+Alt+T | Toggle task list formatting |
-| inlineCode | Ctrl+Shift+C | Toggle inline code formatting |
-| codeBlock | Ctrl+Shift+Alt+C | Toggle code block formatting |
-| horizontalRule | Ctrl+L | Insert a horizontal rule |
-| saveText | Ctrl+Shift+S | Save text to IndexedDB |
-| showSearchModal | Ctrl+Shift+F | Display the search modal window |
+| Command         | Default Shortcut     | Description                                         |
+|-----------------|----------------------|-----------------------------------------------------|
+| header1         | Ctrl+Alt+1           | Apply Heading Level 1                               |
+| header2         | Ctrl+Alt+2           | Apply Heading Level 2                               |
+| header3         | Ctrl+Alt+3           | Apply Heading Level 3                               |
+| header4         | Ctrl+Alt+4           | Apply Heading Level 4                               |
+| header5         | Ctrl+Alt+5           | Apply Heading Level 5                               |
+| header6         | Ctrl+Alt+6           | Apply Heading Level 6                               |
+| paragraph       | Ctrl+Alt+0           | Set text as paragraph (remove heading)              |
+| bold            | Ctrl+B               | Toggle bold formatting                              |
+| italic          | Ctrl+I               | Toggle italic formatting                            |
+| strike          | Ctrl+S               | Toggle strikethrough formatting                     |
+| quote           | Ctrl+Shift+Q         | Toggle blockquote formatting                        |
+| bulletList      | Ctrl+U               | Toggle unordered (bullet) list formatting           |
+| orderedList     | Ctrl+O               | Toggle ordered list formatting                      |
+| taskList        | Ctrl+Alt+T           | Toggle task list formatting                         |
+| inlineCode      | Ctrl+Shift+C         | Toggle inline code formatting                       |
+| codeBlock       | Ctrl+Shift+Alt+C     | Toggle code block formatting                        |
+| horizontalRule  | Ctrl+L               | Insert a horizontal rule                            |
+| saveText        | Ctrl+Shift+S         | Save text to IndexedDB                              |
+| showSearchModal | Ctrl+Shift+F         | Display the search modal window                     |
+| Clipboard Copy  | Ctrl+Alt+C           | Copy the current Markdown content to your clipboard |
+| clearStyle      | Ctrl+Alt+X           | Remove all styles from the editor                   |
