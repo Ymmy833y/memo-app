@@ -50,3 +50,4 @@ MemoApp is a lightweight note-taking application that allows you to create and m
 | saveText        | Ctrl+Shift+S         | Save text to IndexedDB                              |
 | showSearchModal | Ctrl+Shift+F         | Display the search modal window                     |
 | Clipboard Copy  | Ctrl+Alt+C           | Copy the current Markdown content to your clipboard |
+| clearStyle      | Ctrl+Alt+X           | Remove all styles from the editor                   |
