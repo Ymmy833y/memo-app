@@ -1,3 +1,4 @@
+import { copyMarkdownText } from '../index.js';
 import { getEditorInstance } from './editor.js';
 import { autoSaveText } from './autoSave.js';
 
@@ -15,12 +16,13 @@ const defaultShortcuts = {
   quote: 'Ctrl+Shift+Q',
   bulletList: 'Ctrl+U',
   orderedList: 'Ctrl+O',
-  taskList: 'Ctrl+Shift+Alt+T',
+  taskList: 'Ctrl+Alt+T',
   inlineCode: 'Ctrl+Shift+C',
   codeBlock: 'Ctrl+Shift+Alt+C',
   horizontalRule: 'Ctrl+L',
   saveText: 'Ctrl+Shift+S',
   showSearchModal: 'Ctrl+Shift+F',
+  copy: 'Ctrl+Alt+C',
 };
 
 const localStorageKey = 'shortcuts';
@@ -199,6 +201,9 @@ const commandMapping = {
       searchInput.focus();
     }
   },
+  copy: async() => {
+    await copyMarkdownText();
+  }
 };
 
 /**
