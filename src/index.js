@@ -113,6 +113,10 @@ document.addEventListener('selectionchange', () => {
 
 // Clipboard copy functionality
 document.getElementById('clipboard-btn').addEventListener('click', async() => {
+  await copyMarkdownText();
+});
+
+export async function copyMarkdownText() {
   const editor = getEditorInstance();
   if (!editor) return;
   const text = editor.getMarkdown();
@@ -123,7 +127,7 @@ document.getElementById('clipboard-btn').addEventListener('click', async() => {
   } catch (err) {
     console.error('Failed to copy text: ', err);
   }
-});
+};
 
 /**
  * Updates the character count display based on the WYSIWYG content (HTML),
