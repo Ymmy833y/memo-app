@@ -1,12 +1,10 @@
-/* global module */
 module.exports = {
   darkMode: 'class',
   content: [
-    './src/**/*.html',
-    './src/**/*.js'
+    './src/**/*.{html,ts}',
   ],
   theme: {
     extend: {},
   },
   plugins: [],
-};
+}
