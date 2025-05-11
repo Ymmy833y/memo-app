@@ -6,10 +6,10 @@ on:
       - main
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Branch to deploy'
+      publish_branch:
+        description: 'Branch to publish to GitHub Pages (target)'
         required: true
-        default: 'main'
+        default: 'gh-pages'
 
 jobs:
   build-and-deploy:
@@ -21,7 +21,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -39,4 +39,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
-          publish_branch: public
+          publish_branch: ${{ github.event.inputs.publish_branch }}
