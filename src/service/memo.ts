@@ -14,8 +14,7 @@ export const saveMemo = async () => {
 }
 
 export const upsertMemo = async (text: string) => {
-  const titleCandidates = text.split(/\r?\n/);
-  const title = titleCandidates.find(c => c && c.trim() !== '' && c.replace(/<[^>]*>/g, '') !== '') ?? null;
+  const title = retrieveValidTitle(text);
   if (title === null) {
     return;
   }
@@ -74,4 +73,9 @@ export const removeMemo = async (memoDto: MemoDto): Promise<void> => {
     await memoContentDB.deleteById(memoContent.id);
   }
   await memoHeaderDB.deleteById(memoDto.id);
+}
+
+export const retrieveValidTitle = (text: string): string | null => {
+  const titleCandidates = text.split(/\r?\n/);
+  return titleCandidates.find(c => c && c.trim() !== '' && c.replace(/<[^>]*>/g, '') !== '') ?? null;
 }

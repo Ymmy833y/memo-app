@@ -6,6 +6,7 @@ import { initializeAutoSave, toggleAutoSave, changeAutoSaveInterval } from './se
 import { renderAllMemos } from './service/allMemos';
 import { renderMemoSearch } from './service/memoSearch';
 import { initializeShortcuts } from './service/shortcut';
+import { migrateOldDB } from './service/migrate';
 
 const main = () => {
   // On initial load, retrieve the theme and apply it globally
@@ -168,6 +169,7 @@ export const hideSearchModal = () => {
 initDatabase().then(() => {
   console.log('Database initialized successfully.');
   main();
+  migrateOldDB();
 }).catch((error) => {
   console.error('Error initializing database:', error);
 });
