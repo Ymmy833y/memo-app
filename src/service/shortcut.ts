@@ -1,6 +1,7 @@
-import { copyMarkdownText } from '../index.js';
-import { getEditorInstance, clearEditorStyles } from './editor.js';
-import { autoSaveText } from './autoSave.js';
+import { getEditorInstance, clearEditorStyles, copyMarkdownText } from './editor.js';
+import { saveMemo } from './memo.js';
+
+const localStorageKey = 'shortcuts';
 
 const defaultShortcuts = {
   header1: 'Ctrl+Alt+1',
@@ -26,68 +27,11 @@ const defaultShortcuts = {
   clearStyle: 'Ctrl+Alt+X',
 };
 
-const localStorageKey = 'shortcuts';
-
-/**
- * Loads shortcut settings from local storage.
- * If no settings are found, save the default settings and return them.
- */
-function loadShortcuts() {
-  const stored = localStorage.getItem(localStorageKey);
-  if (stored) {
-    try {
-      const parsed = JSON.parse(stored);
-      // Merge stored settings with default settings.
-      return { ...defaultShortcuts, ...parsed };
-    } catch (e) {
-      console.error('Failed to load shortcut settings from local storage. Using default settings.', e);
-    }
-  }
-  // Save default settings to localStorage if not found.
-  saveShortcuts(defaultShortcuts);
-  return defaultShortcuts;
-}
-
-/**
- * Saves the shortcut settings to local storage.
- */
-function saveShortcuts(shortcuts) {
-  localStorage.setItem(localStorageKey, JSON.stringify(shortcuts));
-}
-
-let shortcuts = loadShortcuts();
-
-/**
- * Parses a shortcut string (e.g., "Ctrl+Shift+C") and converts it into an object.
- */
-function parseShortcut(shortcut) {
-  const parts = shortcut.split('+').map(part => part.trim().toLowerCase());
-  return {
-    ctrl: parts.includes('ctrl'),
-    shift: parts.includes('shift'),
-    alt: parts.includes('alt'),
-    // Retrieve the part that is not 'ctrl', 'shift', or 'alt' as the key.
-    key: parts.find(p => !['ctrl', 'shift', 'alt'].includes(p))
-  };
-}
-
-/**
- * Determines whether a keyboard event matches the specified shortcut.
- */
-function isMatchingEvent(event, shortcutStr) {
-  const parsed = parseShortcut(shortcutStr);
-  if (parsed.ctrl !== event.ctrlKey) return false;
-  if (parsed.shift !== event.shiftKey) return false;
-  if (parsed.alt !== event.altKey) return false;
-  if (parsed.key && parsed.key.toLowerCase() !== event.key.toLowerCase()) return false;
-  return true;
-}
-
 /**
  * Mapping of commands to their corresponding functions.
  * Assumes that the TUI Editor instance has an exec() method.
  */
-const commandMapping = {
+const commandMapping: Record<string, () => void> = {
   header1: () => {
     const editor = getEditorInstance();
     if (editor) {
@@ -195,15 +139,13 @@ const commandMapping = {
   },
 
   saveText: () => {
-    autoSaveText();
+    saveMemo();
   },
   showSearchModal: () => {
-    const searchModal = document.getElementById('search-modal');
+    const searchModal = document.getElementById('search-modal') as HTMLDivElement;
     searchModal.classList.remove('hidden');
-    const searchInput = document.getElementById('search-input');
-    if (searchInput) {
-      searchInput.focus();
-    }
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    searchInput.focus();
   },
   copy: async() => {
     await copyMarkdownText();
@@ -211,9 +153,75 @@ const commandMapping = {
 };
 
 /**
+ * Loads shortcut settings from local storage.
+ * If no settings are found, save the default settings and return them.
+ *
+ * @returns The loaded shortcut settings.
+ */
+const loadShortcuts = (): Record<string, string> => {
+  const stored = localStorage.getItem(localStorageKey);
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      // Merge stored settings with default settings.
+      return { ...defaultShortcuts, ...parsed };
+    } catch (e) {
+      console.error('Failed to load shortcut settings from local storage. Using default settings.', e);
+    }
+  }
+  // Save default settings to localStorage if not found.
+  saveShortcuts(defaultShortcuts);
+  return defaultShortcuts;
+}
+
+/**
+ * Saves the shortcut settings to local storage.
+ *
+ * @param shortcuts - The shortcut settings to save.
+ */
+const saveShortcuts = (shortcuts: Record<string, string>) => {
+  localStorage.setItem(localStorageKey, JSON.stringify(shortcuts));
+}
+
+
+/**
+ * Parses a shortcut string (e.g., "Ctrl+Shift+C") and converts it into an object.
+ *
+ * @param shortcut - The shortcut string to parse.
+ * @returns An object with boolean properties for ctrl, shift, alt, and the key.
+ */
+function parseShortcut(shortcut: string): { ctrl: boolean, shift: boolean, alt: boolean, key: string | undefined } {
+  const parts = shortcut.split('+').map(part => part.trim().toLowerCase());
+  return {
+    ctrl: parts.includes('ctrl'),
+    shift: parts.includes('shift'),
+    alt: parts.includes('alt'),
+    // Retrieve the part that is not 'ctrl', 'shift', or 'alt' as the key.
+    key: parts.find(p => !['ctrl', 'shift', 'alt'].includes(p))
+  };
+}
+
+/**
+ * Determines whether a keyboard event matches the specified shortcut.
+ *
+ * @param event - The keyboard event to check.
+ * @param shortcutStr - The shortcut string to match against.
+ * @returns Whether the event matches the shortcut.
+ */
+const isMatchingEvent = (event: KeyboardEvent, shortcutStr: string): boolean => {
+  const parsed = parseShortcut(shortcutStr);
+  if (parsed.ctrl !== event.ctrlKey) return false;
+  if (parsed.shift !== event.shiftKey) return false;
+  if (parsed.alt !== event.altKey) return false;
+  if (parsed.key && parsed.key.toLowerCase() !== event.key.toLowerCase()) return false;
+  return true;
+}
+
+/**
  * Keyboard event handler.
  */
-function handleKeyDown(event) {
+const handleKeyDown = (event: KeyboardEvent) => {
+  const shortcuts = loadShortcuts();
   for (const command in shortcuts) {
     const shortcutStr = shortcuts[command];
     if (isMatchingEvent(event, shortcutStr)) {
@@ -230,18 +238,6 @@ function handleKeyDown(event) {
  * Initializes the shortcut functionality.
  * Calling this function registers a keydown event handler on the document.
  */
-function initShortcuts() {
+export const initializeShortcuts = () => {
   document.addEventListener('keydown', handleKeyDown, true);
 }
-
-/**
- * Updates the shortcut key for a specified command and saves the setting to local storage.
- * @param {string} command - The command to update (e.g., 'bold').
- * @param {string} newShortcut - The new shortcut string (e.g., 'Ctrl+Shift+B').
- */
-function updateShortcut(command, newShortcut) {
-  shortcuts[command] = newShortcut;
-  saveShortcuts(shortcuts);
-}
-
-export { initShortcuts, updateShortcut, loadShortcuts, saveShortcuts, shortcuts };

@@ -3,7 +3,7 @@
  * If not set, returns 'dark' or 'light' based on the browser's color scheme.
  * @returns {string} 'dark' or 'light'
  */
-export function getCurrentTheme() {
+export const getCurrentTheme = () => {
   const storedTheme = localStorage.getItem('editorTheme');
   if (storedTheme) {
     return storedTheme;
@@ -16,19 +16,19 @@ export function getCurrentTheme() {
  * Saves the given theme to localStorage.
  * @param {string} theme - 'dark' or 'light'
  */
-export function setCurrentTheme(theme) {
+export const setCurrentTheme = (theme: string) => {
   localStorage.setItem('editorTheme', theme);
 }
 
 /**
- * Toggles the stored theme between 'dark' and 'light'
- * and returns the updated theme.
+ * Toggles the theme between 'dark' and 'light'.
  * @returns {string} The new theme after toggling.
  */
-export function toggleStoredTheme() {
+export const toggleTheme = () => {
   const currentTheme = getCurrentTheme();
   const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
   setCurrentTheme(newTheme);
+  applyGlobalTheme(newTheme);
   return newTheme;
 }
 
@@ -37,11 +37,15 @@ export function toggleStoredTheme() {
  * If the theme is 'dark', adds the 'dark' class to the <html> element;
  * otherwise, removes it.
  * This is useful for Tailwind CSS dark mode.
- * @param {string} theme - 'dark' or 'light'
+ * @param {string | undefined} theme - 'dark' or 'light' or undefined
  */
-export function applyGlobalTheme(theme) {
-  const toggleThemeBtn = document.getElementById('toggle-theme');
-  const useElem = toggleThemeBtn.querySelector('svg use');
+export const applyGlobalTheme = (theme?: string) => {
+  if (!theme) {
+    theme = getCurrentTheme();
+  }
+
+  const toggleThemeBtn = document.getElementById('toggle-theme') as HTMLButtonElement;
+  const useElem = toggleThemeBtn.querySelector('svg use') as SVGUseElement;
 
   if (theme === 'dark') {
     document.documentElement.classList.add('dark');
