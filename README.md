@@ -1,6 +1,6 @@
 # MemoApp v3.0.0-alpha1
 
-MemoApp is a lightweight note-taking application that allows you to create and manage memos using a rich Markdown editor directly in your browser.
+MemoApp is a robust note-taking application that allows you to create and manage memos using a rich Markdown editor directly in your browser.
 
 <div style="margin-bottom: 20px;">
   <a href="https://ymmy833y.github.io/memo-app/" target="_blank" style="display: inline-block; padding: 12px 24px; background-color: #4CAF50; color: #fff; font-size: 18px; font-weight: bold; text-decoration: none; border-radius: 8px;">
@@ -10,21 +10,14 @@ MemoApp is a lightweight note-taking application that allows you to create and m
 
 ## Features
 
-* **Rich Markdown Editor** – Enhanced editing experience with a WYSIWYG Markdown editor (Toast UI Editor) plus additional plugins.
-* **Auto Save** – Automatically saves your notes at regular intervals to prevent data loss.
-* **Quick Search** – Find your memos quickly using a built-in search modal interface.
-* **Keyboard Shortcuts** – Comprehensive hotkeys for a variety of editing commands.
-* **Offline Functionality** – After an initial network connection, essential resource files are cached locally, allowing memo editing even when the network is unavailable.
-
-## Characteristics
-
-* **Rich Markdown Editor:** The app features an enhanced Markdown editor powered by TOAST UI Editor. It supports extended syntax through additional plugins, including a Color Syntax plugin for text styling, a UML plugin for rendering UML diagrams, and a Code Syntax Highlight plugin for syntax-highlighted code blocks. This provides a rich editing experience where you can format text, insert code with highlighting, and even draw diagrams within your notes.
-* **Auto Save:** Your edits are automatically saved at a set interval so you never lose progress. In v2.0.0-alpha3, a user interface has been added to adjust the auto-save interval. You can customize how frequently the app saves your work (for example, every 30 seconds or 1 minute) to suit your needs.
-* **Quick Search:** MemoApp includes a search modal that lets you quickly find content across all your memos. By typing keywords, you can filter through your notes to locate specific information. The search opens in a modal window for convenience and can be toggled easily.
-* **Keyboard Shortcuts:** To boost productivity, MemoApp supports a comprehensive set of keyboard shortcuts for various formatting and editing commands, allowing fast interaction without relying on the mouse.
-* **Offline Functionality:** MemoApp requires an initial network connection to download and cache its resource files. Once cached, the app can function without continuous connectivity; however, not all features may be available when offline.
-* **Dark Mode/Light Mode Switching:** The application allows switching themes based on the browser's color scheme or via user interaction, ensuring comfortable reading in various lighting conditions.
-* **Clipboard Save:** A clipboard button is provided to quickly copy the entire content of the editor to your clipboard, facilitating easy sharing or backup of your notes.
+* **Rich Markdown Editor** – Enjoy an enhanced editing experience with a WYSIWYG Markdown editor powered by TOAST UI Editor along with additional plugins (Color Syntax, UML, and Code Syntax Highlight).
+* **Auto Save** – Your notes are automatically saved at regular intervals to prevent data loss. The auto-save interval is adjustable via the user interface.
+* **Memo Database Persistence** – All memos are stored persistently using IndexedDB. The app uses an upsert mechanism: if a memo already exists (an exact text match or with the same first-line title), its timestamp is updated and the new version is stored as part of the memo’s history; otherwise, a new record is inserted.
+* **Quick Search** – Find your memos quickly using the built-in search modal. The search functionality extracts a snippet from each memo to help you locate the desired content with ease.
+* **Keyboard Shortcuts** – Boost your productivity with a comprehensive set of keyboard shortcuts for various formatting and editing commands.
+* **Offline Functionality** – After the initial network connection, essential resources are cached locally. This allows you to edit your memos even without continuous connectivity.
+* **Dark Mode/Light Mode Switching** – Switch themes easily based on your preference or your browser’s color scheme.
+* **Clipboard Copy** – A dedicated button lets you quickly copy your entire Markdown content to your clipboard for easy sharing or backup.
 
 ## Shortcut Keys
 
