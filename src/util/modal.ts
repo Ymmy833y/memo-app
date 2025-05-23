@@ -16,7 +16,7 @@ export class Modal {
   }
 
   private initializeModalStyle(): void {
-    const classesToEnsure = ['fixed', 'inset-0', 'flex', 'items-center', 'justify-center', 'bg-black', 'bg-opacity-50', 'hidden'];
+    const classesToEnsure = ['fixed', 'inset-0', 'flex', 'items-center', 'justify-center', 'bg-black', 'bg-opacity-50', 'hidden', 'z-50'];
     classesToEnsure.forEach(cls => {
       if (!this.modalElem.classList.contains(cls)) {
         this.modalElem.classList.add(cls);
