@@ -98,7 +98,7 @@ export const createViewer = (viewerElem: HTMLElement, text: string): void => {
 export const copyMarkdownText = async (): Promise<void> => {
   const editor = getEditorInstance();
   if (!editor) return;
-  const text = editor.getMarkdown();
+  const text = editor.getMarkdown().replace(/<[\s\S]*?>/g, '');
   try {
     await navigator.clipboard.writeText(text);
     setClipboardIcon('check');
@@ -114,8 +114,17 @@ export const copyMarkdownText = async (): Promise<void> => {
 export const clearEditorStyles = () => {
   if (!editorInstance) return;
   const html = editorInstance.getHTML();
-  const cleaned = html.replace(/<[^>]*>/g, ''); // Remove all HTML tags
-  editorInstance.setHTML(cleaned);
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const preservedAttrs = new Set(['data-task', 'data-task-checked']);
+  doc.querySelectorAll('*').forEach(el => {
+    Array.from(el.attributes).forEach(attr => {
+      if (!preservedAttrs.has(attr.name)) {
+        el.removeAttribute(attr.name);
+      }
+    });
+  });
+  editorInstance.setHTML(doc.body.innerHTML);
 }
 
 /**
