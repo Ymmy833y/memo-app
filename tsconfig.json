@@ -7,6 +7,10 @@
       "WebWorker",
       "DOM",
     ],
+    "types": [
+      "node",
+      "vitest/globals"
+    ],
     "resolveJsonModule": true,
     "strict": true,
     "esModuleInterop": true,
@@ -15,6 +19,9 @@
     "outDir": "./dist",
     "moduleResolution": "node"
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*",
+    "tests/**/*"
+  ],
   "exclude": ["node_modules"]
 }

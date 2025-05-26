@@ -1,7 +1,6 @@
-import { hideSideMenu } from '..';
 import { memoHeaderDB } from '../db';
 import { MemoHeader } from '../model';
-import { defaultModal, escapeHTML, formatDate, generateConfirmModalContent, ModalSize } from '../util';
+import { defaultModal, escapeHTML, formatDate, generateConfirmModalContent, ModalSize, hideSideMenu } from '../util';
 import { applyMemoToEditor, getMemo, getMemoDto, removeMemo } from './memo';
 import { generateMemoHistoryContent } from './memoHistory';
 

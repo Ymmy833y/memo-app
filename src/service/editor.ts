@@ -12,7 +12,7 @@ import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight';
 import uml from '@toast-ui/editor-plugin-uml';
 
 import { getCurrentTheme } from './theme';
-import { setClipboardIcon } from '..';
+import { setClipboardIcon } from '../util';
 
 /**
  * Represents the single instance of the Editor.

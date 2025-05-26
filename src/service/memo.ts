@@ -1,8 +1,7 @@
-import { setSaveIcon } from '..';
 import { memoContentDB } from '../db/MemoContentDB';
 import { memoHeaderDB } from '../db/MemoHeaderDB';
 import { convertToMemo, convertToMemoContentDto, Memo, MemoContent, MemoDto, MemoHeader } from '../model';
-import { compressText, decompressText } from '../util';
+import { compressText, decompressText, setSaveIcon } from '../util';
 import { getEditorInstance, updateEditorWithText } from './editor';
 
 export const saveMemo = async () => {
@@ -13,7 +12,7 @@ export const saveMemo = async () => {
   setSaveIcon('check');
 }
 
-export const upsertMemo = async (text: string) => {
+const upsertMemo = async (text: string) => {
   const title = retrieveValidTitle(text);
   if (title === null) {
     return;
@@ -41,9 +40,6 @@ export const upsertMemo = async (text: string) => {
 
 export const getMemoDto = async (id: number): Promise<MemoDto> => {
   const memoHeader = await memoHeaderDB.selectById(id);
-  if (!memoHeader) {
-    throw new Error(`Memo with ID ${id} not found`);
-  }
   const memoContents = await memoContentDB.selectByHeaderId(memoHeader.getId());
   const contentDtos = memoContents.map(memoContent => {
     memoContent.setText(decompressText(memoContent.getText()));
@@ -77,5 +73,5 @@ export const removeMemo = async (memoDto: MemoDto): Promise<void> => {
 
 export const retrieveValidTitle = (text: string): string | null => {
   const titleCandidates = text.split(/\r?\n/);
-  return titleCandidates.find(c => c && c.trim() !== '' && c.replace(/<[^>]*>/g, '') !== '') ?? null;
+  return titleCandidates.find(c => c.replace(/<[^>]*>/g, '').trim()) || null;
 }
