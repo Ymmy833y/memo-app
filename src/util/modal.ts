@@ -224,5 +224,23 @@ export const generateConfirmModalContent = (
   return modalContent;
 };
 
-const defaultModalElem = document.getElementById('default-modal') as HTMLDivElement;
-export const defaultModal = new Modal(defaultModalElem);
+let _realModal: Modal | null = null;
+
+const getRealModal = (): Modal => {
+  if (!_realModal) {
+    const el = document.getElementById('default-modal') as HTMLDivElement;
+    _realModal = new Modal(el);
+  }
+  return _realModal;
+}
+
+export const defaultModal = new Proxy({} as Modal, {
+  get(_, prop: keyof Modal) {
+    return (getRealModal() as Modal)[prop];
+  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  set(_, prop: keyof Modal, value: any) {
+    (getRealModal() as Modal)[prop] = value;
+    return true;
+  },
+}) as Modal;

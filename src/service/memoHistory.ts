@@ -1,9 +1,9 @@
-import { hideSearchModal, hideSideMenu } from '..';
 import { memoContentDB } from '../db';
 import { Memo, MemoContentDto, MemoDto, MemoSearchDto } from '../model';
 import { defaultModal, formatDate, Modal, ModalSize } from '../util';
 import { createViewer } from './editor';
 import { applyMemoToEditor } from './memo';
+import { hideSearchModal, hideSideMenu } from '../util';
 
 export const generateMemoHistoryContent = (memoDto: MemoDto | MemoSearchDto): HTMLElement => {
   const historyContainer = document.createElement('div');
