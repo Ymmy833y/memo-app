@@ -22,7 +22,7 @@ const main = () => {
   // Check if the browser supports Service Workers
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register(new URL('./sw.ts', import.meta.url))
+    navigator.serviceWorker.register(new URL('./sw.ts', import.meta.url), { type: 'module' } )
         .then(registration => {
           console.log('Service Worker registered with scope:', registration.scope);
         })
