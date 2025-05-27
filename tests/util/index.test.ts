@@ -3,6 +3,7 @@ import LZString from 'lz-string';
 import {
   escapeHTML,
   decompressText,
+  setDocumentTitle,
   setClipboardIcon,
   setSaveIcon,
   hideSideMenu,
@@ -53,6 +54,27 @@ describe('decompressText', () => {
     expect(decompressText('not-a-valid-compressed-string')).toBe('');
     // Empty input should also produce empty output
     expect(decompressText('')).toBe('');
+  });
+});
+
+describe('setDocumentTitle', () => {
+  beforeEach(() => {
+    document.title = '';
+  });
+
+  it('sets document.title to "Memo App | {subtitle}" when subtitle is provided', () => {
+    setDocumentTitle('Foo');
+    expect(document.title).toBe('Memo App | Foo');
+  });
+
+  it('sets document.title to "Memo App" when subtitle is null', () => {
+    setDocumentTitle(null);
+    expect(document.title).toBe('Memo App');
+  });
+
+  it('treats empty string as no subtitle and sets default title', () => {
+    setDocumentTitle('');
+    expect(document.title).toBe('Memo App');
   });
 });
 

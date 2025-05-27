@@ -46,6 +46,18 @@ export const formatDate = (date: Date): string => {
 }
 
 /**
+ * Updates the document title to "Memo App | {subtitle}".
+ * @param subtitle - The subtitle to append after the pipe.
+ */
+export const setDocumentTitle = (subtitle: string | null) => {
+  if (subtitle) {
+    document.title = `Memo App | ${subtitle}`;
+  } else {
+    document.title = 'Memo App';
+  }
+}
+
+/**
  * Sets the clipboard button icon.
  * @param {string} state - 'default' for the copy icon or 'check' for the complete icon.
  */

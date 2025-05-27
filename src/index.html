@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.css">
   <link rel="stylesheet" href="./style/tailwind.css">
   <link rel="stylesheet" href="./style/base.css">
+  <link rel="icon" href="./img/icon.png">
   <script>
     (function() {
       if (window.innerWidth < 510) document.querySelector("meta[name=viewport]").setAttribute("content", "width=510, user-scalable=no");
@@ -167,7 +168,7 @@
   </main>
 
   <!-- Search modal -->
-  <div id="search-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div id="search-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 mx-2 w-full hidden">
     <div class="bg-white dark:bg-gray-800 w-full max-w-6xl h-5/6 m-5 flex flex-col relative">
       <!-- Top row: Close button -->
       <div class="flex justify-end p-2">
@@ -195,9 +196,7 @@
         <div id="search-results"
           class="w-full overflow-y-auto border border-gray-200 dark:border-gray-700 rounded p-2 flex flex-col space-y-2">
         </div>
-        <div id="search-preview"
-          class="hidden w-1/2 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded p-2 ml-4">
-        </div>
+        <div id="search-preview" class="hidden z-50 mx-2"></div>
       </div>
     </div>
   </div>

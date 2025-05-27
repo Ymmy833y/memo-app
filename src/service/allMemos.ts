@@ -89,7 +89,7 @@ const generateAllMemosContent = (memoHeaders: MemoHeader[]): HTMLElement => {
     headerDiv.appendChild(btnContainer);
 
     const titleDiv = document.createElement('div');
-    titleDiv.className = 'text-md whitespace-pre-wrap truncate';
+    titleDiv.className = 'text-md truncate';
     titleDiv.textContent = escapeHTML(memoHeader.getTitle());
 
     li.appendChild(headerDiv);
