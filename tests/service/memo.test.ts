@@ -9,6 +9,7 @@ const FIXED_DATE = new Date('2025-05-03T00:01:00Z');
 
 describe('memo', () => {
   let setSaveIconSpy: any;
+  let setDocumentTitleSpy: any;
 
   beforeEach(async () => {
     vi.restoreAllMocks();
@@ -19,6 +20,7 @@ describe('memo', () => {
     vi.spyOn(util, 'decompressText').mockImplementation((text) => text);
 
     setSaveIconSpy = vi.spyOn(util, 'setSaveIcon').mockImplementation(() => {});
+    setDocumentTitleSpy = vi.spyOn(util, 'setDocumentTitle').mockImplementation(() => {});
 
     globalThis.indexedDB = new IDBFactory();
     await initDatabase();
@@ -84,9 +86,11 @@ describe('memo', () => {
       vi.spyOn(memoService, 'retrieveValidTitle').mockReturnValue(null);
       const selectByTitleSpy = vi.spyOn(memoHeaderDB, 'selectByTitle');
 
-      await memoService.saveMemo();
+      const actual = await memoService.saveMemo();
+      expect(actual).toBeUndefined();
       expect(selectByTitleSpy).not.toHaveBeenCalled();
-      expect(setSaveIconSpy).toHaveBeenCalledTimes(1);
+      expect(setSaveIconSpy).toHaveBeenCalledTimes(0);
+      expect(setDocumentTitleSpy).toHaveBeenCalledTimes(0);
     });
 
     it('should create new entry when title does not exist', async () => {
@@ -112,6 +116,9 @@ describe('memo', () => {
       expect(newMemoContent.getText()).toBe(
         'New Test Title 3\nNew Test Text 3-1'
       );
+
+      expect(setSaveIconSpy).toHaveBeenCalledTimes(1);
+      expect(setDocumentTitleSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should update when title exists and memo content has changed', async () => {
@@ -133,6 +140,9 @@ describe('memo', () => {
       const memoContent = memoContents[2];
       expect(memoContent).toBeInstanceOf(MemoContent);
       expect(memoContent.getText()).toBe('Test Title 1\nNew Test Text 1-3');
+
+      expect(setSaveIconSpy).toHaveBeenCalledTimes(1);
+      expect(setDocumentTitleSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should only update dates when title exists and memo content matches', async () => {
@@ -155,6 +165,9 @@ describe('memo', () => {
       expect(memoContent).toBeInstanceOf(MemoContent);
       expect(memoContent.getCreatedAt().getTime()).toBe(FIXED_DATE.getTime());
       expect(memoContent.getText()).toBe('Test Title 1\nTest text 1-2');
+
+      expect(setSaveIconSpy).toHaveBeenCalledTimes(1);
+      expect(setDocumentTitleSpy).toHaveBeenCalledTimes(1);
     });
   });
 

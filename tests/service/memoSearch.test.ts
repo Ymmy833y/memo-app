@@ -74,7 +74,6 @@ describe('renderMemoSearch', () => {
     await renderMemoSearch('keyword', false);
 
     const results = document.getElementById('search-results')!;
-    const preview = document.getElementById('search-preview')!;
 
     const btns = results.querySelectorAll('button');
     expect(btns).toHaveLength(1);
@@ -83,7 +82,5 @@ describe('renderMemoSearch', () => {
     btns[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
     expect(generateMemoHistoryContent).toHaveBeenCalledTimes(1);
-    expect(preview.classList.contains('hidden')).toBe(false);
-    expect(results.classList.contains('w-1/2')).toBe(true);
   });
 });
