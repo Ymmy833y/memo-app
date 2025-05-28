@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - fix/pin-parcel-2.13.3
   workflow_dispatch:
     inputs:
       publish_branch:
