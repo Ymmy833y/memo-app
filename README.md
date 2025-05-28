@@ -1,4 +1,4 @@
-# MemoApp v3.0.0
+# MemoApp v3.0.1
 
 MemoApp is a robust note-taking application that allows you to create and manage memos using a rich Markdown editor directly in your browser.
 
