@@ -144,3 +144,6 @@ sw.addEventListener('fetch', (event: FetchEvent) => {
     })(),
   );
 });
+
+// Mark this file as an ES module for testing purposes
+export {};

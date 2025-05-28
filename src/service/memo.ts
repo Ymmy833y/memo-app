@@ -1,29 +1,31 @@
-import { setSaveIcon } from '..';
 import { memoContentDB } from '../db/MemoContentDB';
 import { memoHeaderDB } from '../db/MemoHeaderDB';
 import { convertToMemo, convertToMemoContentDto, Memo, MemoContent, MemoDto, MemoHeader } from '../model';
-import { compressText, decompressText } from '../util';
+import { compressText, decompressText, setDocumentTitle, setSaveIcon } from '../util';
 import { getEditorInstance, updateEditorWithText } from './editor';
 
 export const saveMemo = async () => {
   const editor = getEditorInstance();
   if (!editor) return;
   const text = editor.getMarkdown();
-  await upsertMemo(text);
-  setSaveIcon('check');
+  const isSuccess = await upsertMemo(text);
+  if (isSuccess) {
+    setSaveIcon('check');
+    setDocumentTitle(retrieveValidTitle(text));
+  }
 }
 
-export const upsertMemo = async (text: string) => {
+const upsertMemo = async (text: string): Promise<number | undefined> => {
   const title = retrieveValidTitle(text);
   if (title === null) {
-    return;
+    return undefined;
   }
 
   const existMemoHeader = await memoHeaderDB.selectByTitle(title);
   if (!existMemoHeader) {
     const memoHeader = await memoHeaderDB.insert(MemoHeader.fromRequiredArgs(title));
     await memoContentDB.insert(MemoContent.fromRequiredArgs(memoHeader.getId(), compressText(text)));
-    return;
+    return memoHeader.getId();
   }
   existMemoHeader.setUpdatedAt(new Date());
   await memoHeaderDB.update(existMemoHeader);
@@ -37,13 +39,11 @@ export const upsertMemo = async (text: string) => {
   } else {
     await memoContentDB.insert(MemoContent.fromRequiredArgs(existMemoHeader.getId(), compressText(text)));
   }
+  return existMemoHeader.getId();
 }
 
 export const getMemoDto = async (id: number): Promise<MemoDto> => {
   const memoHeader = await memoHeaderDB.selectById(id);
-  if (!memoHeader) {
-    throw new Error(`Memo with ID ${id} not found`);
-  }
   const memoContents = await memoContentDB.selectByHeaderId(memoHeader.getId());
   const contentDtos = memoContents.map(memoContent => {
     memoContent.setText(decompressText(memoContent.getText()));
@@ -66,6 +66,7 @@ export const getMemo = async (id: number): Promise<Memo> => {
 export const applyMemoToEditor = async (memo: Memo): Promise<void> => {
   await saveMemo();
   updateEditorWithText(memo.text);
+  setDocumentTitle(retrieveValidTitle(memo.text));
 }
 
 export const removeMemo = async (memoDto: MemoDto): Promise<void> => {
@@ -77,5 +78,5 @@ export const removeMemo = async (memoDto: MemoDto): Promise<void> => {
 
 export const retrieveValidTitle = (text: string): string | null => {
   const titleCandidates = text.split(/\r?\n/);
-  return titleCandidates.find(c => c && c.trim() !== '' && c.replace(/<[^>]*>/g, '') !== '') ?? null;
+  return titleCandidates.find(c => c.replace(/<[^>]*>/g, '').trim()) || null;
 }

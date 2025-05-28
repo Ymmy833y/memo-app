@@ -16,7 +16,7 @@ export class Modal {
   }
 
   private initializeModalStyle(): void {
-    const classesToEnsure = ['fixed', 'inset-0', 'flex', 'items-center', 'justify-center', 'bg-black', 'bg-opacity-50', 'hidden'];
+    const classesToEnsure = ['fixed', 'inset-0', 'flex', 'items-center', 'justify-center', 'bg-black', 'bg-opacity-50', 'hidden', 'z-50'];
     classesToEnsure.forEach(cls => {
       if (!this.modalElem.classList.contains(cls)) {
         this.modalElem.classList.add(cls);
@@ -224,5 +224,23 @@ export const generateConfirmModalContent = (
   return modalContent;
 };
 
-const defaultModalElem = document.getElementById('default-modal') as HTMLDivElement;
-export const defaultModal = new Modal(defaultModalElem);
+let _realModal: Modal | null = null;
+
+const getRealModal = (): Modal => {
+  if (!_realModal) {
+    const el = document.getElementById('default-modal') as HTMLDivElement;
+    _realModal = new Modal(el);
+  }
+  return _realModal;
+}
+
+export const defaultModal = new Proxy({} as Modal, {
+  get(_, prop: keyof Modal) {
+    return (getRealModal() as Modal)[prop];
+  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  set(_, prop: keyof Modal, value: any) {
+    (getRealModal() as Modal)[prop] = value;
+    return true;
+  },
+}) as Modal;

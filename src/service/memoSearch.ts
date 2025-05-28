@@ -1,5 +1,6 @@
 import { memoContentDB } from '../db';
 import { MemoSearchDto } from '../model';
+import { Modal, ModalSize } from '../util';
 import { getMemoDto } from './memo';
 import { generateMemoHistoryContent } from './memoHistory';
 
@@ -16,13 +17,12 @@ export const renderMemoSearch = async (keyword: string, caseSensitive: boolean):
     noResults.className = 'text-gray-500 dark:text-gray-300';
     noResults.textContent = 'No results found.';
     searchResultsContent.appendChild(noResults);
-    toggleSearchPreview(false);
     return;
   }
 
   memoSearchDtos.forEach(memo => {
     const memoElement = document.createElement('button');
-    memoElement.className = 'py-2 px-2 text-left hover:bg-gray-200 dark:hover:bg-gray-700 rounded';
+    memoElement.className = 'py-2 px-2 text-left truncate hover:bg-gray-200 dark:hover:bg-gray-700 rounded';
     memoElement.innerHTML = memo.title;
     memoElement.addEventListener('click', () => showSearchPreview(memo));
 
@@ -56,21 +56,6 @@ const findMemosByKeyword = async (keyword: string, caseSensitive: boolean): Prom
 
 const showSearchPreview = (memo: MemoSearchDto): void => {
   const previewContent = document.getElementById('search-preview') as HTMLDivElement;
-  previewContent.innerHTML = '';
-  previewContent.appendChild(generateMemoHistoryContent(memo));
-  toggleSearchPreview(true);
-}
-
-const toggleSearchPreview = (show: boolean): void => {
-  const resultsContainer = document.getElementById('search-results') as HTMLDivElement;
-  const previewContainer = document.getElementById('search-preview') as HTMLDivElement;
-  if (show) {
-    resultsContainer.classList.remove('w-full');
-    resultsContainer.classList.add('w-1/2');
-    previewContainer.classList.remove('hidden');
-  } else {
-    resultsContainer.classList.add('w-full');
-    resultsContainer.classList.remove('w-1/2');
-    previewContainer.classList.add('hidden');
-  }
+  const innerModal = new Modal(previewContent);
+  innerModal.setModal(generateMemoHistoryContent(memo), ModalSize.XL);
 }

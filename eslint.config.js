@@ -10,6 +10,14 @@ module.exports = tseslint.config(
   tseslint.configs.strict,
   ...tseslint.configs.stylistic,
   {
+    files: ['tests/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-non-null-assertion': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-empty-function': 'off',
+    },
+  },
+  {
     languageOptions: { parser: parser },
     rules: {
       indent: ['error', 2],
