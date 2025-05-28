@@ -31,7 +31,7 @@ jobs:
     - name: Build packages
       run: npm run build
       env:
-          PARCEL_WORKER_BACKEND: process
+        PARCEL_WORKER_BACKEND: process
 
     - name: Run tests
       run: npm test

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - fix/pin-parcel-2.13.3
   workflow_dispatch:
     inputs:
       publish_branch:
@@ -13,10 +14,10 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [22.x]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -33,6 +34,8 @@ jobs:
 
       - name: Build project
         run: npm run build
+        env:
+          PARCEL_WORKER_BACKEND: process
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
