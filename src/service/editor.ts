@@ -116,10 +116,19 @@ export const clearEditorStyles = () => {
   const html = editorInstance.getHTML();
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
-  const preservedAttrs = new Set(['data-task', 'data-task-checked']);
+
+  const tagPreserveMap: Record<string, Set<string>> = {
+    A:    new Set(['href']),
+    IMG:  new Set(['src', 'alt', 'title']),
+    CODE: new Set(['class']),
+    TH:   new Set(['colspan', 'rowspan', 'scope']),
+    TD:   new Set(['colspan', 'rowspan']),
+    LI:   new Set(['data-task', 'data-task-checked']),
+  };
   doc.querySelectorAll('*').forEach(el => {
+    const preserveForTag = tagPreserveMap[el.tagName.toUpperCase()];
     Array.from(el.attributes).forEach(attr => {
-      if (!preservedAttrs.has(attr.name)) {
+      if (!preserveForTag?.has(attr.name)) {
         el.removeAttribute(attr.name);
       }
     });
