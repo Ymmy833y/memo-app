@@ -1,6 +1,6 @@
 {
   "name": "memo-app",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "scripts": {
     "start": "parcel src/index.html",
     "build": "parcel build src/index.html --dist-dir public --public-url ./",
@@ -28,7 +28,7 @@
     "@vitest/coverage-istanbul": "^3.1.4",
     "fake-indexeddb": "^6.0.1",
     "jsdom": "^26.1.0",
-    "parcel": "^2.13.3",
+    "parcel": "2.13.3",
     "parcel-reporter-bundle-manifest": "^1.0.0",
     "postcss": "^8.5.3",
     "svgo": "^3.3.2",
