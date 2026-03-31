@@ -22,7 +22,7 @@ export const renderMemoSearch = async (keyword: string, caseSensitive: boolean):
 
   memoSearchDtos.forEach(memo => {
     const memoElement = document.createElement('button');
-    memoElement.className = 'py-2 px-2 text-left truncate hover:bg-gray-200 dark:hover:bg-gray-700 rounded';
+    memoElement.className = 'py-2 px-2 text-left truncate hover:bg-gray-200 dark:hover:bg-gray-700 rounded shrink-0';
     memoElement.innerHTML = memo.title;
     memoElement.addEventListener('click', () => showSearchPreview(memo));
 
